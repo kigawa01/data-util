@@ -14,6 +14,10 @@ public class DataBase implements Iterable<Table> {
         this.name = name;
     }
 
+    public boolean equals(String name){
+        return this.name.equals(name);
+    }
+
     @Override
     public Iterator<Table> iterator() {
         return tableList.listIterator();
