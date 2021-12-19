@@ -1,19 +1,25 @@
 package net.kigawa.data;
 
-public class Label {
-    private final String name;
-    private final DataType dataType;
+public class Label<T> {
+    private String name;
+    private Class<T> javaType;
+    private String dbType;
 
-    public Label(String name, DataType dataType) {
-        this.name = name;
-        this.dataType = dataType;
-    }
-
-    public DataType getDataType() {
-        return dataType;
+    protected Label() {
     }
 
     public String getName() {
         return name;
+    }
+
+    protected void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean equals(Label label) {
+        if (!label.name.equals(name)) return false;
+        if (!label.javaType.equals(javaType)) return false;
+        if (!label.dbType.equals(dbType)) return false;
+        return true;
     }
 }

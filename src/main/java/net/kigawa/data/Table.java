@@ -1,27 +1,33 @@
 package net.kigawa.data;
 
-import java.util.Iterator;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class Table implements Iterator<Column> {
+public class Table implements Iterable<Column> {
+    private final Labels labels;
+    private final List<Column> columnList = new ArrayList<>();
+    private final String name;
+    private final DataBase dataBase;
 
-    @Override
-    public boolean hasNext() {
-        return false;
+    protected Table(String name, DataBase dataBase, Labels labels, Column... columns) {
+        this.dataBase = dataBase;
+        this.name = name;
+        this.labels = labels;
+        Collections.addAll(columnList, columns);
     }
 
     @Override
-    public Column next() {
-        return null;
+    public Iterator<Column> iterator() {
+        return columnList.iterator();
     }
 
     @Override
-    public void remove() {
-        Iterator.super.remove();
+    public void forEach(Consumer<? super Column> action) {
+        Iterable.super.forEach(action);
     }
 
     @Override
-    public void forEachRemaining(Consumer<? super Column> action) {
-        Iterator.super.forEachRemaining(action);
+    public Spliterator<Column> spliterator() {
+        return Iterable.super.spliterator();
     }
 }
