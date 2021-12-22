@@ -1,10 +1,10 @@
 package net.kigawa.data;
 
+import net.kigawa.util.Logger;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Spliterator;
-import java.util.function.Consumer;
 
 public class DataBase implements Iterable<Table> {
     private final String name;
@@ -14,7 +14,26 @@ public class DataBase implements Iterable<Table> {
         this.name = name;
     }
 
-    public boolean equals(String name){
+    public Table createTable(String name, Labels labels, Column... columns) {
+        Table table = getTable(name);
+        if (table != null) {
+            Logger.getInstance().info(name + " is exist");
+            return table;
+        }
+
+        table = new Table(name, this, labels, columns);
+        tableList.add(table);
+        return table;
+    }
+
+    public Table getTable(String name) {
+        for (Table table : tableList) {
+            if (table.equals(name)) return table;
+        }
+        return null;
+    }
+
+    public boolean equals(String name) {
         return this.name.equals(name);
     }
 
@@ -23,13 +42,4 @@ public class DataBase implements Iterable<Table> {
         return tableList.listIterator();
     }
 
-    @Override
-    public void forEach(Consumer<? super Table> action) {
-        Iterable.super.forEach(action);
-    }
-
-    @Override
-    public Spliterator<Table> spliterator() {
-        return Iterable.super.spliterator();
-    }
 }

@@ -1,7 +1,9 @@
 package net.kigawa.data;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class Table implements Iterable<Column> {
     private final Labels labels;
@@ -16,18 +18,16 @@ public class Table implements Iterable<Column> {
         Collections.addAll(columnList, columns);
     }
 
+    public boolean equals(String name) {
+        return this.name.equals(name);
+    }
+
+    public Column createColumn(){
+
+    }
+
     @Override
     public Iterator<Column> iterator() {
         return columnList.iterator();
-    }
-
-    @Override
-    public void forEach(Consumer<? super Column> action) {
-        Iterable.super.forEach(action);
-    }
-
-    @Override
-    public Spliterator<Column> spliterator() {
-        return Iterable.super.spliterator();
     }
 }
