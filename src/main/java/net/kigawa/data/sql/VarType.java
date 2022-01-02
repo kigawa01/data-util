@@ -1,27 +1,19 @@
 package net.kigawa.data.sql;
 
-import net.kigawa.data.function.TriConsumer;
+import net.kigawa.data.function.ThrowTriConsumer;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 
 public enum VarType {
-    STRING(new TriConsumer<PreparedStatement, Integer, Object>() {
-        @Override
-        public void accept(PreparedStatement statement, Integer integer, Object o) {
-            try {
-                if (o instanceof String) {
-                    statement.setString(integer, (String) o);
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }),
+    STRING((p, i, o) -> p.setString(i, (String) o)),
     ;
-    private final TriConsumer<PreparedStatement, Integer, Object> setStatement;
+    private final ThrowTriConsumer<PreparedStatement, Integer, Object> setStatement;
 
-    VarType(TriConsumer<PreparedStatement, Integer, Object> setStatement) {
+    VarType(ThrowTriConsumer<PreparedStatement, Integer, Object> setStatement) {
         this.setStatement = setStatement;
+    }
+
+    void setStatement(PreparedStatement statement,int index,Object o) throws Exception {
+        setStatement.accept(statement,index,o);
     }
 }

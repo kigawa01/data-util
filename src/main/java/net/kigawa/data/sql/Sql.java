@@ -1,5 +1,6 @@
 package net.kigawa.data.sql;
 
+import net.kigawa.data.DataLogger;
 import net.kigawa.util.Logger;
 
 import java.sql.*;
@@ -19,24 +20,46 @@ public abstract class Sql {
 
     public abstract boolean use(String name);
 
-    public ResultSet select(Connection connection, SqlCmd sqlCmd) {
+    public int update(Connection connection,SqlCmd sqlCmd){
+        try {
+            PreparedStatement statement=setCmd(connection,sqlCmd);
+            if (statement==null)return -1;
+            return statement.executeUpdate();
+        } catch (SQLException e) {
+            DataLogger.getInstance().warning(e);
+        }
+        return -1;
+    }
+
+    public ResultSet query(Connection connection, SqlCmd sqlCmd) {
+        try {
+            PreparedStatement statement = setCmd(connection, sqlCmd);
+            if (statement == null) return null;
+            return statement.executeQuery();
+        } catch (SQLException e) {
+            DataLogger.getInstance().warning(e);
+        }
+        return null;
+    }
+
+    private PreparedStatement setCmd(Connection connection, SqlCmd sqlCmd) {
         try {
             PreparedStatement statement = connection.prepareStatement(sqlCmd.getCmd());
-            Iterator<Class> classIterator = sqlCmd.getClasses();
+            Iterator<VarType> classIterator = sqlCmd.getVarTypes();
             Iterator<Object> varIterator = sqlCmd.getObjects();
             int index = 0;
             while (classIterator.hasNext() && varIterator.hasNext()) {
-                Class cla = classIterator.next();
+                VarType varType = classIterator.next();
                 Object o = varIterator.next();
-                if (cla.equals(String.class)) {
-                    statement.set
-                }
+                varType.setStatement(statement, index, o);
                 index++;
             }
+            return statement;
 
-        } catch (SQLException e) {
-            //TODO
+        } catch (Exception e) {
+            DataLogger.getInstance().warning(e);
         }
+        return null;
     }
 
     public void close(Connection connection) {

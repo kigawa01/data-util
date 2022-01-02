@@ -5,10 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public abstract class SqlCmd {
-    List<Class> classList = new ArrayList<>();
-    List<Object> objectList = new ArrayList<>();
+    protected List<VarType> classList = new ArrayList<>();
+    protected List<Object> objectList = new ArrayList<>();
 
-    Iterator<Class> getClasses() {
+    Iterator<VarType> getVarTypes() {
         return classList.iterator();
     }
 
