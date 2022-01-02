@@ -1,8 +1,5 @@
 package net.kigawa.data.sql;
 
-import net.kigawa.data.cmd.EmptySqlCmd;
-import net.kigawa.data.cmd.Where;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;

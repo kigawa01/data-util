@@ -1,6 +1,4 @@
-package net.kigawa.data.cmd;
-
-import net.kigawa.data.sql.AbstractSqlCmd;
+package net.kigawa.data.sql;
 
 public class EmptySqlCmd extends AbstractSqlCmd<EmptySqlCmd> {
 

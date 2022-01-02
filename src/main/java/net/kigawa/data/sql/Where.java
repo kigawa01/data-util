@@ -1,9 +1,9 @@
-package net.kigawa.data.cmd;
-
-import net.kigawa.data.sql.AbstractSqlCmd;
+package net.kigawa.data.sql;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import static net.kigawa.data.sql.Sql.WHERE;
 
 public class Where<T extends AbstractSqlCmd<T>> {
     private final T cmd;
@@ -12,10 +12,19 @@ public class Where<T extends AbstractSqlCmd<T>> {
     Where(T cmd, List<String> cmdStr) {
         this.cmd = cmd;
         this.cmdStr = cmdStr;
+        cmdStr.add(WHERE);
     }
 
     public static Where<EmptySqlCmd> getInstance() {
         return new Where<>(new EmptySqlCmd(), new LinkedList<>());
+    }
+
+    public Where<T> add(String column, VarType varType, Object o) {
+        cmdStr.add(column);
+        cmdStr.add("= ?");
+
+        cmd.addVar(varType, o);
+        return this;
     }
 
     public T create() {

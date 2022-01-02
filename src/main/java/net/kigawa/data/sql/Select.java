@@ -1,7 +1,6 @@
-package net.kigawa.data.cmd;
+package net.kigawa.data.sql;
 
 import net.kigawa.StringUtil;
-import net.kigawa.data.sql.AbstractSqlCmd;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -23,7 +22,15 @@ public class Select extends AbstractSqlCmd<Select> {
     }
 
     public Select columns(String... columns) {
+        if (columnList == null) columnList = new LinkedList<>();
         Collections.addAll(columnList, columns);
+        return this;
+    }
+
+    public Select columnsAs(String column, String as) {
+        if (columnList == null) columnList = new LinkedList<>();
+        columnList.add(column);
+        columnList.add(as);
         return this;
     }
 
@@ -47,5 +54,10 @@ public class Select extends AbstractSqlCmd<Select> {
     public Where<Select> where() {
         create();
         return new Where<>(this, cmd);
+    }
+
+    @Override
+    protected void addVar(VarType varType, Object o) {
+        super.addVar(varType, o);
     }
 }

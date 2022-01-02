@@ -10,6 +10,7 @@ public abstract class Sql {
     public static final String SELECT = "SELECT";
     public static final String FROM = "FROM";
     public static final String DISTINCT="DISTINCT";
+    public static final String WHERE="WHERE";
     private final String url;
 
     public Sql(SqlType sqlType, String url) {
