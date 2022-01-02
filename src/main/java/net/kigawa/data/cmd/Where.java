@@ -14,8 +14,8 @@ public class Where<T extends AbstractSqlCmd<T>> {
         this.cmdStr = cmdStr;
     }
 
-    public static Where<SqlCmd> getInstance() {
-        return new Where<>(new SqlCmd(), new LinkedList<>());
+    public static Where<EmptySqlCmd> getInstance() {
+        return new Where<>(new EmptySqlCmd(), new LinkedList<>());
     }
 
     public T create() {

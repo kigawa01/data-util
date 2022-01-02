@@ -1,6 +1,6 @@
 package net.kigawa.data.sql;
 
-import net.kigawa.data.cmd.SqlCmd;
+import net.kigawa.data.cmd.EmptySqlCmd;
 import net.kigawa.data.cmd.Where;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public abstract class AbstractSqlCmd<T> {
         return sb.toString();
     }
 
-    public T where(Where<SqlCmd> where) {
+    public T where(Where<EmptySqlCmd> where) {
         cmd.addAll(where.getCmdStr());
         varTypes.addAll(where.getCmd().varTypes);
         objectList.addAll(where.getCmd().objectList);
