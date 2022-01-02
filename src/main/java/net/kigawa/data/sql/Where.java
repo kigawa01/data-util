@@ -3,7 +3,7 @@ package net.kigawa.data.sql;
 import java.util.LinkedList;
 import java.util.List;
 
-import static net.kigawa.data.sql.Sql.WHERE;
+import static net.kigawa.data.sql.Sql.*;
 
 public class Where<T extends AbstractSqlCmd<T>> {
     private final T cmd;
@@ -24,6 +24,16 @@ public class Where<T extends AbstractSqlCmd<T>> {
         cmdStr.add("= ?");
 
         cmd.addVar(varType, o);
+        return this;
+    }
+
+    public Where<T> and() {
+        cmdStr.add(AND);
+        return this;
+    }
+
+    public Where<T> or() {
+        cmdStr.add(OR);
         return this;
     }
 

@@ -11,6 +11,8 @@ public abstract class Sql {
     public static final String FROM = "FROM";
     public static final String DISTINCT="DISTINCT";
     public static final String WHERE="WHERE";
+    public static final String AND="AND";
+    public static final String OR="OR";
     private final String url;
 
     public Sql(SqlType sqlType, String url) {
