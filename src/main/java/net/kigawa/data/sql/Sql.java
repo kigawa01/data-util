@@ -7,6 +7,9 @@ import java.sql.*;
 import java.util.Iterator;
 
 public abstract class Sql {
+    public static final String SELECT = "SELECT";
+    public static final String FROM = "FROM";
+    public static final String DISTINCT="DISTINCT";
     private final String url;
 
     public Sql(SqlType sqlType, String url) {
@@ -20,10 +23,10 @@ public abstract class Sql {
 
     public abstract boolean use(String name);
 
-    public int update(Connection connection,SqlCmd sqlCmd){
+    public int update(Connection connection, AbstractSqlCmd sqlCmd) {
         try {
-            PreparedStatement statement=setCmd(connection,sqlCmd);
-            if (statement==null)return -1;
+            PreparedStatement statement = setCmd(connection, sqlCmd);
+            if (statement == null) return -1;
             return statement.executeUpdate();
         } catch (SQLException e) {
             DataLogger.getInstance().warning(e);
@@ -31,7 +34,7 @@ public abstract class Sql {
         return -1;
     }
 
-    public ResultSet query(Connection connection, SqlCmd sqlCmd) {
+    public ResultSet query(Connection connection, AbstractSqlCmd sqlCmd) {
         try {
             PreparedStatement statement = setCmd(connection, sqlCmd);
             if (statement == null) return null;
@@ -42,7 +45,7 @@ public abstract class Sql {
         return null;
     }
 
-    private PreparedStatement setCmd(Connection connection, SqlCmd sqlCmd) {
+    private PreparedStatement setCmd(Connection connection, AbstractSqlCmd sqlCmd) {
         try {
             PreparedStatement statement = connection.prepareStatement(sqlCmd.getCmd());
             Iterator<VarType> classIterator = sqlCmd.getVarTypes();

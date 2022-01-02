@@ -1,17 +1,17 @@
 package net.kigawa.data.sql;
 
-import java.util.*;
+import net.kigawa.data.cmd.SqlCmd;
+import net.kigawa.data.cmd.Where;
 
-public abstract class SqlCmd {
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+public abstract class AbstractSqlCmd<T> {
     protected final LinkedList<String> cmd = new LinkedList<>();
-    private final List<VarType> varTypes = new ArrayList<>();
-    private final List<Object> objectList = new ArrayList<>();
-
-    public SqlCmd(String... command) {
-        cmd.addAll(Arrays.asList(command));
-    }
-
-    protected SqlCmd(){}
+    protected final List<VarType> varTypes = new ArrayList<>();
+    protected final List<Object> objectList = new ArrayList<>();
 
     protected void addVar(VarType varType, Object var) {
         varTypes.add(varType);
@@ -36,5 +36,12 @@ public abstract class SqlCmd {
             if (iterator.hasNext()) sb.append(" ");
         }
         return sb.toString();
+    }
+
+    public T where(Where<SqlCmd> where) {
+        cmd.addAll(where.getCmdStr());
+        varTypes.addAll(where.getCmd().varTypes);
+        objectList.addAll(where.getCmd().objectList);
+        return (T) this;
     }
 }
