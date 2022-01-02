@@ -1,6 +1,6 @@
 package net.kigawa.data.sql;
 
-import net.kigawa.data.function.ThrowTriConsumer;
+import net.kigawa.function.ThrowTriConsumer;
 
 import java.sql.PreparedStatement;
 
