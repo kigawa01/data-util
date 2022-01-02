@@ -1,5 +1,6 @@
-package net.kigawa.data;
+package net.kigawa.data.database;
 
+import net.kigawa.data.sql.ColumnList;
 import net.kigawa.util.Logger;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class DataBase implements Iterable<Table> {
         this.name = name;
     }
 
-    public Table createTable(String name, Labels labels, Column... columns) {
+    public Table createTable(String name, ColumnList labels, Recorde... columns) {
         Table table = getTable(name);
         if (table != null) {
             Logger.getInstance().info(name + " is exist");

@@ -1,17 +1,19 @@
-package net.kigawa.data;
+package net.kigawa.data.database;
+
+import net.kigawa.data.sql.ColumnList;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class Table implements Iterable<Column> {
-    private final Labels labels;
-    private final List<Column> columnList = new ArrayList<>();
+public class Table implements Iterable<Recorde> {
+    private final ColumnList labels;
+    private final List<Recorde> columnList = new ArrayList<>();
     private final String name;
     private final DataBase dataBase;
 
-    protected Table(String name, DataBase dataBase, Labels labels, Column... columns) {
+    protected Table(String name, DataBase dataBase, ColumnList labels, Recorde... columns) {
         this.dataBase = dataBase;
         this.name = name;
         this.labels = labels;
@@ -22,12 +24,8 @@ public class Table implements Iterable<Column> {
         return this.name.equals(name);
     }
 
-    public Column createColumn(){
-
-    }
-
     @Override
-    public Iterator<Column> iterator() {
+    public Iterator<Recorde> iterator() {
         return columnList.iterator();
     }
 }

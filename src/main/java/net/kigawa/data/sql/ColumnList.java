@@ -1,13 +1,17 @@
-package net.kigawa.data;
+package net.kigawa.data.sql;
 
-public class Labels {
-    private final Label[] labels;
+public class ColumnList {
+    private final Column[] labels;
 
-    public Labels(Label... labels) {
+    public ColumnList(Column... labels) {
         this.labels = labels;
     }
 
-    public int getIndex(Label label) {
+    void onSelect(StringBuffer sb){
+
+    }
+
+    public int getIndex(Column label) {
         for (int i = 0; i < size(); i++) {
             if (label.equals(labels[i])) return i;
         }
@@ -18,7 +22,7 @@ public class Labels {
         return labels.length;
     }
 
-    public Label getLabel(int index) {
+    public Column getLabel(int index) {
         return labels[index];
     }
 }

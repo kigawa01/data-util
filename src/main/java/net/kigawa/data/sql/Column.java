@@ -1,11 +1,11 @@
-package net.kigawa.data;
+package net.kigawa.data.sql;
 
-public class Label<T> {
+public class Column<T> {
     private String name;
     private Class<T> javaType;
     private String dbType;
 
-    protected Label() {
+    protected Column() {
     }
 
     public String getName() {
@@ -16,7 +16,7 @@ public class Label<T> {
         this.name = name;
     }
 
-    public boolean equals(Label label) {
+    public boolean equals(Column label) {
         if (!label.name.equals(name)) return false;
         if (!label.javaType.equals(javaType)) return false;
         if (!label.dbType.equals(dbType)) return false;

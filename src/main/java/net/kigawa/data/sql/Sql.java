@@ -1,0 +1,62 @@
+package net.kigawa.data.sql;
+
+import net.kigawa.util.Logger;
+
+import java.sql.*;
+import java.util.Iterator;
+
+public abstract class Sql {
+    private final String url;
+
+    public Sql(SqlType sqlType, String url) {
+        try {
+            Class.forName(sqlType.getClassName());
+        } catch (ClassNotFoundException e) {
+            Logger.getInstance().warning(e);
+        }
+        this.url = url;
+    }
+
+    public abstract boolean use(String name);
+
+    public ResultSet select(Connection connection, SqlCmd sqlCmd) {
+        try {
+            PreparedStatement statement = connection.prepareStatement(sqlCmd.getCmd());
+            Iterator<Class> classIterator = sqlCmd.getClasses();
+            Iterator<Object> varIterator = sqlCmd.getObjects();
+            int index = 0;
+            while (classIterator.hasNext() && varIterator.hasNext()) {
+                Class cla = classIterator.next();
+                Object o = varIterator.next();
+                if (cla.equals(String.class)) {
+                    statement.set
+                }
+                index++;
+            }
+
+        } catch (SQLException e) {
+            //TODO
+        }
+    }
+
+    public void close(Connection connection) {
+        Logger.getInstance().info("closing...");
+        try {
+            if (connection == null) return;
+            if (connection.isClosed()) return;
+            connection.close();
+        } catch (SQLException e) {
+            Logger.getInstance().warning(e);
+        }
+    }
+
+    public Connection connect() {
+        Logger.getInstance().info("connecting...");
+        try {
+            return DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            Logger.getInstance().warning(e);
+        }
+        return null;
+    }
+}

@@ -1,14 +1,16 @@
-package net.kigawa.data;
+package net.kigawa.data.database;
+
+import net.kigawa.data.sql.ColumnList;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-public class Column implements Iterable<Data> {
-    private final Labels labels;
+public class Recorde implements Iterable<Data> {
+    private final ColumnList labels;
     private final Data[] data;
     private final Table table;
 
-    protected Column(Table table, Labels labels, Data... dataArray) {
+    protected Recorde(Table table, ColumnList labels, Data... dataArray) {
         this.table = table;
         this.labels = labels;
         this.data = dataArray;
