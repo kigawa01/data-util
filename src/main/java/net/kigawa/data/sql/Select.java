@@ -51,11 +51,6 @@ public class Select extends AbstractSqlCmd<Select> {
         return this;
     }
 
-    public Where<Select> where() {
-        create();
-        return new Where<>(this, cmd);
-    }
-
     @Override
     protected void addVar(VarType varType, Object o) {
         super.addVar(varType, o);

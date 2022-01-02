@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class AbstractSqlCmd<T> {
+public abstract class AbstractSqlCmd<T extends AbstractSqlCmd> {
     protected final LinkedList<String> cmd = new LinkedList<>();
     protected final List<VarType> varTypes = new ArrayList<>();
     protected final List<Object> objectList = new ArrayList<>();
@@ -14,6 +14,7 @@ public abstract class AbstractSqlCmd<T> {
         varTypes.add(varType);
         objectList.add(varType);
     }
+    public abstract T create();
 
     Iterator<VarType> getVarTypes() {
         return varTypes.iterator();
@@ -33,6 +34,11 @@ public abstract class AbstractSqlCmd<T> {
             if (iterator.hasNext()) sb.append(" ");
         }
         return sb.toString();
+    }
+
+    public Where where() {
+        create();
+        return new Where<T>((T)this, cmd);
     }
 
     public T where(Where<EmptySqlCmd> where) {
