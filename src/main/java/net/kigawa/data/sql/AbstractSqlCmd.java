@@ -1,11 +1,13 @@
 package net.kigawa.data.sql;
 
+import net.kigawa.data.cmd.EmptySqlCmd;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class AbstractSqlCmd<T extends AbstractSqlCmd> {
+public abstract class AbstractSqlCmd<T extends AbstractSqlCmd<T>> {
     protected final LinkedList<String> cmd = new LinkedList<>();
     protected final List<VarType> varTypes = new ArrayList<>();
     protected final List<Object> objectList = new ArrayList<>();

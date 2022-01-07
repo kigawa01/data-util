@@ -1,5 +1,7 @@
 package net.kigawa.data.sql;
 
+import net.kigawa.data.cmd.EmptySqlCmd;
+
 import java.util.LinkedList;
 import java.util.List;
 

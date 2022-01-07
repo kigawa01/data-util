@@ -1,6 +1,8 @@
-package net.kigawa.data.sql;
+package net.kigawa.data.cmd;
 
 import net.kigawa.StringUtil;
+import net.kigawa.data.sql.AbstractSqlCmd;
+import net.kigawa.data.sql.VarType;
 
 import java.util.Collections;
 import java.util.LinkedList;
