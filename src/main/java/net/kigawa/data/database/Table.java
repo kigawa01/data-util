@@ -11,9 +11,9 @@ public class Table implements Iterable<Recorde> {
     private final ColumnList labels;
     private final List<Recorde> columnList = new ArrayList<>();
     private final String name;
-    private final DataBase dataBase;
+    private final Database dataBase;
 
-    protected Table(String name, DataBase dataBase, ColumnList labels, Recorde... columns) {
+    protected Table(String name, Database dataBase, ColumnList labels, Recorde... columns) {
         this.dataBase = dataBase;
         this.name = name;
         this.labels = labels;
