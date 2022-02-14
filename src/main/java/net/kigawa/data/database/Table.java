@@ -1,31 +1,31 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.sql.ColumnList;
+import net.kigawa.data.sql.Column;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-public class Table implements Iterable<Recorde> {
-    private final ColumnList labels;
-    private final List<Recorde> columnList = new ArrayList<>();
+public class Table {
+    private final Database database;
     private final String name;
-    private final Database dataBase;
+    private final Column[] columns;
 
-    protected Table(String name, Database dataBase, ColumnList labels, Recorde... columns) {
-        this.dataBase = dataBase;
+    Table(Database dataBase, String name, Column... columns) {
+        this.database = dataBase;
         this.name = name;
-        this.labels = labels;
-        Collections.addAll(columnList, columns);
+        this.columns = columns;
     }
 
-    public boolean equals(String name) {
-        return this.name.equals(name);
+    public Database getDatabase() {
+        return database;
     }
 
-    @Override
-    public Iterator<Recorde> iterator() {
-        return columnList.iterator();
+    public String getName() {
+        return name;
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof Table) {
+            var src = (Table) o;
+            return database.equals(src.database) && name.equals(src.name);
+        }
+        return false;
     }
 }
