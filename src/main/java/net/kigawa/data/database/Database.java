@@ -16,8 +16,15 @@ public class Database {
     private Connection connection;
     private int session;
 
-    public Database(String url) {
+    public Database(String url, String name) {
         this.url = url;
+
+        try {
+            getPreparedStatement("create database if not exists " + name).executeUpdate();
+            getPreparedStatement("use " + name).executeUpdate();
+        } catch (SQLException e) {
+            Logger.getInstance().warning(e);
+        }
     }
 
     public boolean equalsURL(String url) {
