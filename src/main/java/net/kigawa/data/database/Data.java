@@ -1,13 +1,11 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.sql.Column;
-
 public class Data<T> {
     private final Column label;
-    private final Recorde column;
+    private final Record column;
     private T data;
 
-    protected Data(Recorde column, Column label, T data) {
+    protected Data(Record column, Column label, T data) {
         this.data = data;
         this.label = label;
         this.column = column;

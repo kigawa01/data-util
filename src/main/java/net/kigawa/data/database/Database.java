@@ -1,6 +1,5 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.sql.Column;
 import net.kigawa.log.Logger;
 
 import java.sql.Connection;
@@ -63,7 +62,7 @@ public class Database {
         }
     }
 
-    public Table getTable(String name, Column... columns) {
+    public Table getTable(String name, Columns columns) {
         for (Table table : tableSet) {
             if (table.getName().equals(name) && table.getDatabase().equals(this)) return table;
         }

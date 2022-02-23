@@ -1,4 +1,4 @@
-package net.kigawa.data.sql;
+package net.kigawa.data.database;
 
 public class Column<T> {
     private String name;

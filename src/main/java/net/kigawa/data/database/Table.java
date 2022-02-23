@@ -1,13 +1,11 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.sql.Column;
-
 public class Table {
     private final Database database;
     private final String name;
-    private final Column[] columns;
+    private final Columns columns;
 
-    Table(Database dataBase, String name, Column... columns) {
+    Table(Database dataBase, String name, Columns columns) {
         this.database = dataBase;
         this.name = name;
         this.columns = columns;

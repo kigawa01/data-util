@@ -1,9 +1,9 @@
-package net.kigawa.data.sql;
+package net.kigawa.data.database;
 
-public class ColumnList {
+public class Columns {
     private final Column[] labels;
 
-    public ColumnList(Column... labels) {
+    public Columns(Column... labels) {
         this.labels = labels;
     }
 
