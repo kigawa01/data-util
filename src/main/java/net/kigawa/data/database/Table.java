@@ -10,6 +10,16 @@ public class Table {
         this.name = name;
         this.columns = columns;
     }
+    //------------------------------------------------------------------------------------------------------------------
+
+    public void createTable() {
+    }
+
+    public void removeTable(){
+
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     public Database getDatabase() {
         return database;
@@ -20,10 +30,19 @@ public class Table {
     }
 
     public boolean equals(Object o) {
-        if (o instanceof Table) {
-            var src = (Table) o;
-            return database.equals(src.database) && name.equals(src.name);
-        }
+        if (o instanceof Table) return equals((Table) o);
         return false;
+    }
+
+    public boolean equals(Table table) {
+        return equals(table.database) && equals(table.name);
+    }
+
+    public boolean equals(String name) {
+        return this.name.equals(name);
+    }
+
+    public boolean equals(Database database) {
+        return this.database.equals(database);
     }
 }

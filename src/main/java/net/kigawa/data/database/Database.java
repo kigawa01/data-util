@@ -11,24 +11,23 @@ import java.util.Set;
 
 public class Database {
     private final String url;
+    private final String name;
     private final Set<Table> tableSet = new HashSet<>();
     private Connection connection;
     private int session;
 
     public Database(String url, String name) {
+        this(url, name, true);
+    }
+
+    public Database(String url, String name, boolean createDB) {
         this.url = url;
+        this.name = name;
 
-        try {
-            getPreparedStatement("create database if not exists " + name).executeUpdate();
-            getPreparedStatement("use " + name).executeUpdate();
-        } catch (SQLException e) {
-            Logger.getInstance().warning(e);
-        }
+        if (createDB) createDB();
     }
 
-    public boolean equalsURL(String url) {
-        return this.url.equals(url);
-    }
+    //------------------------------------------------------------------------------------------------------------------
 
     public synchronized Connection getConnection() {
         try {
@@ -71,7 +70,17 @@ public class Database {
         return table;
     }
 
-    //-----------------------------------------------------------
+    public void createDB() {
+        Logger.getInstance().info("create DB \"" + name + "\"");
+        try {
+            getPreparedStatement("create database if not exists " + name).executeUpdate();
+            getPreparedStatement("use " + name).executeUpdate();
+        } catch (SQLException e) {
+            Logger.getInstance().warning(e);
+        }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     private void createConnection() {
         session = 0;
@@ -81,5 +90,11 @@ public class Database {
             Logger.getInstance().warning(e);
             connection = null;
         }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public boolean equalsURL(String url) {
+        return this.url.equals(url);
     }
 }
