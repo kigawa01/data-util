@@ -5,17 +5,21 @@ public class Table {
     private final String name;
     private final Columns columns;
 
-    Table(Database dataBase, String name, Columns columns) {
+    Table(Database dataBase, String name, Columns columns, boolean migrate) {
         this.database = dataBase;
         this.name = name;
         this.columns = columns;
     }
     //------------------------------------------------------------------------------------------------------------------
 
+    public void migrate() {
+
+    }
+
     public void createTable() {
     }
 
-    public void removeTable(){
+    public void deleteTable() {
 
     }
 

@@ -20,23 +20,26 @@ public class Database {
         this(url, name, true);
     }
 
-    public Database(String url, String name, boolean createDB) {
+    public Database(String url, String name, boolean migrate) {
         this.url = url;
         this.name = name;
 
-        if (createDB) createDB();
+        if (migrate) migrate();
     }
 
-    //------------------------------------------------------------------------------------------------------------------
 
-    public synchronized Connection getConnection() {
+    public void migrate() {
+        createDB();
+    }
+
+    public void createDB() {
+        Logger.getInstance().info("create DB \"" + name + "\"");
         try {
-            session++;
-            if (connection == null || connection.isClosed()) createConnection();
-            return connection;
-        } catch (Exception e) {
+            getPreparedStatement("CREATE DATABASE IF NOT EXIST " + name).executeUpdate();
+            getPreparedStatement("use " + name).executeUpdate();
+            close();
+        } catch (SQLException e) {
             Logger.getInstance().warning(e);
-            return null;
         }
     }
 
@@ -61,26 +64,16 @@ public class Database {
         }
     }
 
-    public Table getTable(String name, Columns columns) {
-        for (Table table : tableSet) {
-            if (table.getName().equals(name) && table.getDatabase().equals(this)) return table;
-        }
-        var table = new Table(this, name, columns);
-        tableSet.add(table);
-        return table;
-    }
-
-    public void createDB() {
-        Logger.getInstance().info("create DB \"" + name + "\"");
+    public synchronized Connection getConnection() {
         try {
-            getPreparedStatement("create database if not exists " + name).executeUpdate();
-            getPreparedStatement("use " + name).executeUpdate();
-        } catch (SQLException e) {
+            session++;
+            if (connection == null || connection.isClosed()) createConnection();
+            return connection;
+        } catch (Exception e) {
             Logger.getInstance().warning(e);
+            return null;
         }
     }
-
-    //------------------------------------------------------------------------------------------------------------------
 
     private void createConnection() {
         session = 0;
@@ -92,7 +85,35 @@ public class Database {
         }
     }
 
-    //------------------------------------------------------------------------------------------------------------------
+    public boolean canUse() {
+        try {
+            var resultSet = getPreparedStatement("SELECT DB_NAME()").executeQuery();
+            resultSet.
+        } catch (SQLException e) {
+            Logger.getInstance().warning(e);
+        }
+    }
+
+    public Table getTable(String name, Columns columns, boolean migrate) {
+        for (Table table : tableSet) {
+            if (table.getName().equals(name) && table.getDatabase().equals(this)) return table;
+        }
+        var table = new Table(this, name, columns, migrate);
+        tableSet.add(table);
+        return table;
+    }
+
+
+    public void deleteDB() {
+        Logger.getInstance().info("delete DB \"" + name + "\"");
+        try {
+            getPreparedStatement("DROP DATABASE IF EXIST " + name).executeUpdate();
+            close();
+        } catch (SQLException e) {
+            Logger.getInstance().warning(e);
+        }
+    }
+
 
     public boolean equalsURL(String url) {
         return this.url.equals(url);
