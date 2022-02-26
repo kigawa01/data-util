@@ -10,7 +10,6 @@ public class Table {
         this.name = name;
         this.columns = columns;
     }
-    //------------------------------------------------------------------------------------------------------------------
 
     public void migrate() {
 
@@ -22,8 +21,6 @@ public class Table {
     public void deleteTable() {
 
     }
-
-    //------------------------------------------------------------------------------------------------------------------
 
     public Database getDatabase() {
         return database;

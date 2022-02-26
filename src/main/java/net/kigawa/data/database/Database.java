@@ -2,10 +2,7 @@ package net.kigawa.data.database;
 
 import net.kigawa.log.Logger;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,10 +22,14 @@ public class Database {
         this.name = name;
 
         if (migrate) migrate();
+
+        close();
     }
 
 
     public void migrate() {
+        Logger.getInstance().info("migrate DB \"" + name + "\"");
+        if (canUse()) return;
         createDB();
     }
 
@@ -37,7 +38,6 @@ public class Database {
         try {
             getPreparedStatement("CREATE DATABASE IF NOT EXIST " + name).executeUpdate();
             getPreparedStatement("use " + name).executeUpdate();
-            close();
         } catch (SQLException e) {
             Logger.getInstance().warning(e);
         }
@@ -87,10 +87,11 @@ public class Database {
 
     public boolean canUse() {
         try {
-            var resultSet = getPreparedStatement("SELECT DB_NAME()").executeQuery();
-            resultSet.
+            ResultSet resultSet = getPreparedStatement("SELECT database()").executeQuery();
+            return (name.equalsIgnoreCase(resultSet.getString("database()")));
         } catch (SQLException e) {
             Logger.getInstance().warning(e);
+            return false;
         }
     }
 
