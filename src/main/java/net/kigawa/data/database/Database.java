@@ -88,6 +88,7 @@ public class Database {
     public boolean canUse() {
         try {
             ResultSet resultSet = getPreparedStatement("SELECT database()").executeQuery();
+            if (!resultSet.next()) return false;
             return (name.equalsIgnoreCase(resultSet.getString("database()")));
         } catch (SQLException e) {
             Logger.getInstance().warning(e);

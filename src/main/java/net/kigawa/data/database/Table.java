@@ -11,6 +11,10 @@ public class Table {
         this.columns = columns;
     }
 
+    public boolean canUse() {
+
+    }
+
     public void migrate() {
 
     }
