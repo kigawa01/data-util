@@ -1,6 +1,6 @@
 package net.kigawa.data.database;
 
-import net.kigawa.log.Logger;
+import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
 import java.util.HashSet;
@@ -10,16 +10,14 @@ public class Database {
     private final String url;
     private final String name;
     private final Set<Table> tableSet = new HashSet<>();
+    private final Logger logger;
     private Connection connection;
     private int session;
 
-    public Database(String url, String name) {
-        this(url, name, true);
-    }
-
-    public Database(String url, String name, boolean migrate) {
+    protected Database(Logger logger, String url, String name, boolean migrate) {
         this.url = url;
         this.name = name;
+        this.logger = logger;
 
         if (migrate) migrate();
 
@@ -28,18 +26,20 @@ public class Database {
 
 
     public void migrate() {
-        Logger.getInstance().info("migrate DB \"" + name + "\"");
+        logger.info("migrate DB \"" + name + "\"");
         if (canUse()) return;
         createDB();
     }
 
     public void createDB() {
-        Logger.getInstance().info("create DB \"" + name + "\"");
+        logger.info("create DB \"" + name + "\"");
         try {
+            createConnection();
             getPreparedStatement("CREATE DATABASE IF NOT EXIST " + name).executeUpdate();
             getPreparedStatement("use " + name).executeUpdate();
+            close();
         } catch (SQLException e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
         }
     }
 
@@ -51,7 +51,7 @@ public class Database {
             if (!connection.isClosed()) connection.close();
             connection = null;
         } catch (SQLException e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
         }
     }
 
@@ -59,28 +59,30 @@ public class Database {
         try {
             return getConnection().prepareStatement(sql);
         } catch (Exception e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
             return null;
         }
     }
 
     public synchronized Connection getConnection() {
         try {
-            session++;
-            if (connection == null || connection.isClosed()) createConnection();
+            if (connection == null || connection.isClosed()) logger.warning("connection is closed!");
             return connection;
         } catch (Exception e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
             return null;
         }
     }
 
+
     private void createConnection() {
         session = 0;
         try {
-            connection = DriverManager.getConnection(url);
+            session++;
+            if (connection == null || connection.isClosed())
+                connection = DriverManager.getConnection(url);
         } catch (Exception e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
             connection = null;
         }
     }
@@ -91,7 +93,7 @@ public class Database {
             if (!resultSet.next()) return false;
             return (name.equalsIgnoreCase(resultSet.getString("database()")));
         } catch (SQLException e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
             return false;
         }
     }
@@ -107,12 +109,12 @@ public class Database {
 
 
     public void deleteDB() {
-        Logger.getInstance().info("delete DB \"" + name + "\"");
+        logger.info("delete DB \"" + name + "\"");
         try {
             getPreparedStatement("DROP DATABASE IF EXIST " + name).executeUpdate();
             close();
         } catch (SQLException e) {
-            Logger.getInstance().warning(e);
+            logger.warning(e);
         }
     }
 

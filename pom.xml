@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.kigawa</groupId>
-    <artifactId>data-manager</artifactId>
+    <groupId>net.kigawa.kutil</groupId>
+    <artifactId>data</artifactId>
     <version>1.0dev</version>
 
     <properties>
@@ -14,9 +14,14 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>net.kigawa</groupId>
+            <groupId>net.kigawa.kutil</groupId>
             <artifactId>kutil</artifactId>
-            <version>1.0data</version>
+            <version>1.0dev</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kigawa.kutil</groupId>
+            <artifactId>log</artifactId>
+            <version>1.0dev</version>
         </dependency>
     </dependencies>
 
