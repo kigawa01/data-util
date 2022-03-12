@@ -1,6 +1,7 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.data.Data;
+import net.kigawa.kutil.kutil.util.StringUtil;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
@@ -12,7 +13,7 @@ public class Database {
     private final String name;
     private final Set<Table> tableSet = new HashSet<>();
     private final Logger logger;
-    private boolean migrate;
+    private final boolean migrate;
     private Connection connection;
     private int session;
 
@@ -25,6 +26,15 @@ public class Database {
         if (migrate) migrate();
 
         close();
+    }
+
+    public int insert(String table, Field... fields) {
+        var sb = new StringBuffer("INSERT INTO ").append(name).append("(");
+        StringUtil.insertSymbol(sb, ",", fields, field -> field.getColumn().getName());
+        sb.append(") VALUES(");
+        StringUtil.insertSymbol(sb, ",", fields, field -> " ? ");
+        sb.append(")");
+        return executeUpdate(sb.toString());
     }
 
     public void migrate() {
@@ -41,7 +51,7 @@ public class Database {
         close();
     }
 
-    public int executeUpdate(String sql,Data... data) {
+    public int executeUpdate(String sql, Data... data) {
         try {
             var st = getPreparedStatement(sql);
             if (st == null) return -1;
@@ -104,13 +114,11 @@ public class Database {
         }
     }
 
-
-    private void createConnection() {
+    public void createConnection() {
         session = 0;
         try {
             session++;
-            if (connection == null || connection.isClosed())
-                connection = DriverManager.getConnection(url);
+            if (connection == null || connection.isClosed()) connection = DriverManager.getConnection(url);
         } catch (Exception e) {
             logger.warning(e);
             connection = null;
@@ -137,7 +145,6 @@ public class Database {
         return table;
     }
 
-
     public void deleteDB() {
         logger.info("delete DB \"" + name + "\"");
         try {
@@ -147,7 +154,6 @@ public class Database {
             logger.warning(e);
         }
     }
-
 
     public boolean equalsURL(String url) {
         return this.url.equals(url);

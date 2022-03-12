@@ -1,11 +1,13 @@
 package net.kigawa.data.database;
 
-public class Field<T> {
+import net.kigawa.data.data.Data;
+
+public class Field {
     private final Column column;
     private final Record record;
-    private T data;
+    private Data data;
 
-    protected Field(Record record, Column column, T data) {
+    protected Field(Record record, Column column, Data data) {
         this.data = data;
         this.column = column;
         this.record = record;
@@ -15,11 +17,11 @@ public class Field<T> {
         return column;
     }
 
-    public T getData() {
+    public Data getData() {
         return data;
     }
 
-    public Field setData(T data) {
+    public Field setData(Data data) {
         this.data = data;
         return this;
     }
