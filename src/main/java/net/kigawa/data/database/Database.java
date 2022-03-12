@@ -1,5 +1,6 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.data.Data;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
@@ -11,6 +12,7 @@ public class Database {
     private final String name;
     private final Set<Table> tableSet = new HashSet<>();
     private final Logger logger;
+    private boolean migrate;
     private Connection connection;
     private int session;
 
@@ -18,28 +20,56 @@ public class Database {
         this.url = url;
         this.name = name;
         this.logger = logger;
+        this.migrate = migrate;
 
         if (migrate) migrate();
 
         close();
     }
 
-
     public void migrate() {
-        logger.info("migrate DB \"" + name + "\"");
+        logger.info("migrate DB: " + name);
         if (canUse()) return;
         createDB();
     }
 
     public void createDB() {
-        logger.info("create DB \"" + name + "\"");
+        logger.info("create DB: " + name);
+        createConnection();
+        executeUpdate("CREATE DATABASE IF NOT EXIST " + name);
+        executeUpdate("use " + name);
+        close();
+    }
+
+    public int executeUpdate(String sql,Data... data) {
         try {
-            createConnection();
-            getPreparedStatement("CREATE DATABASE IF NOT EXIST " + name).executeUpdate();
-            getPreparedStatement("use " + name).executeUpdate();
-            close();
+            var st = getPreparedStatement(sql);
+            if (st == null) return -1;
+            for (Data data1 : data) {
+                data1.addDataToStatement(st);
+            }
+            var result = st.executeUpdate();
+            st.close();
+            return result;
         } catch (SQLException e) {
             logger.warning(e);
+            return -1;
+        }
+    }
+
+    public ResultSet executeQuery(String sql, Data... data) {
+        try {
+            var st = getPreparedStatement(sql);
+            if (st == null) return null;
+            for (Data data1 : data) {
+                data1.addDataToStatement(st);
+            }
+            var result = st.executeQuery();
+            st.close();
+            return result;
+        } catch (SQLException e) {
+            logger.warning(e);
+            return null;
         }
     }
 
@@ -102,7 +132,7 @@ public class Database {
         for (Table table : tableSet) {
             if (table.getName().equals(name) && table.getDatabase().equals(this)) return table;
         }
-        var table = new Table(this, name, columns, migrate);
+        var table = new Table(logger, this, name, columns, migrate);
         tableSet.add(table);
         return table;
     }
