@@ -1,6 +1,7 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.data.Data;
+import net.kigawa.kutil.kutil.list.GenerateMap;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.ResultSet;
@@ -11,12 +12,14 @@ public class Table {
     private final String name;
     private final Columns columns;
     private final Logger logger;
+    private final GenerateMap<Data, Record> recordMap;
 
     protected Table(Logger logger, Database dataBase, String name, Columns columns, boolean migrate) {
         this.database = dataBase;
         this.name = name;
         this.columns = columns;
         this.logger = logger;
+        recordMap = new GenerateMap<>(data -> new Record(logger, this, columns, data));
 
         if (migrate) migrate();
     }
@@ -29,7 +32,7 @@ public class Table {
         return database.insert(name, columns, data);
     }
 
-    public ResultSet select(String table, String[] columns, String where, Data[] data) {
+    public ResultSet select(String[] columns, String where, Data[] data) {
         return database.select(name, columns, where, data);
     }
 
@@ -58,6 +61,14 @@ public class Table {
 
     public void deleteTable() {
         database.executeUpdate("DROP TABLE " + name);
+    }
+
+    public void removeRecord(Data key) {
+        recordMap.remove(key);
+    }
+
+    public Record getRecord(Data key) {
+        return recordMap.get(key);
     }
 
     public Database getDatabase() {
