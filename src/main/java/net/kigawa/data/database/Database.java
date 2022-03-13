@@ -28,6 +28,15 @@ public class Database {
         close();
     }
 
+    public int update(String table, String[] columns, String where, Data data) {
+        var sb = new StringBuffer("UPDATE ").append(table).append(" ");
+        StringUtil.insertSymbol(sb, ",", columns, column -> column + "=?");
+        if (where != null) {
+            sb.append(" WHERE ").append(where);
+        }
+        return executeUpdate(sb.toString(), data);
+    }
+
     public int insert(String table, String[] columns, Data[] data) {
         var sb = new StringBuffer("INSERT INTO ").append(name).append("(");
         StringUtil.insertSymbol(sb, ",", columns);
