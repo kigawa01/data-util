@@ -38,7 +38,7 @@ public class Database {
     }
 
     public int insert(String table, String[] columns, Data[] data) {
-        var sb = new StringBuffer("INSERT INTO ").append(name).append("(");
+        var sb = new StringBuffer("INSERT INTO ").append(table).append("(");
         StringUtil.insertSymbol(sb, ",", columns);
         sb.append(") VALUES(");
         StringUtil.insertSymbol(sb, ",", columns, column -> "?");

@@ -1,7 +1,9 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.data.Data;
 import net.kigawa.kutil.log.log.Logger;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Table {
@@ -17,6 +19,18 @@ public class Table {
         this.logger = logger;
 
         if (migrate) migrate();
+    }
+
+    public int update(String[] columns, String where, Data data) {
+        return database.update(name, columns, where, data);
+    }
+
+    public int insert(String[] columns, Data[] data) {
+        return database.insert(name, columns, data);
+    }
+
+    public ResultSet select(String table, String[] columns, String where, Data[] data) {
+        return database.select(name, columns, where, data);
     }
 
     public boolean canUse() {
@@ -43,7 +57,7 @@ public class Table {
     }
 
     public void deleteTable() {
-
+        database.executeUpdate("DROP TABLE " + name);
     }
 
     public Database getDatabase() {
