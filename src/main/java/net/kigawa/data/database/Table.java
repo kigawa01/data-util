@@ -69,19 +69,19 @@ public class Table {
     }
 
     public boolean equals(Object o) {
-        if (o instanceof Table) return equals((Table) o);
+        if (o instanceof Table) return equalsTable((Table) o);
         return false;
     }
 
-    public boolean equals(Table table) {
-        return equals(table.database) && equals(table.name);
+    public boolean equalsTable(Table table) {
+        return equalsDatabase(table.database) && equalsName(table.name);
     }
 
-    public boolean equals(String name) {
+    public boolean equalsName(String name) {
         return this.name.equals(name);
     }
 
-    public boolean equals(Database database) {
+    public boolean equalsDatabase(Database database) {
         return this.database.equals(database);
     }
 }

@@ -1,7 +1,7 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.data.Data;
-import net.kigawa.kutil.kutil.util.StringUtil;
+import net.kigawa.kutil.kutil.string.StringUtil;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
