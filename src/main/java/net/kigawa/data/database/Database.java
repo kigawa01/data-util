@@ -28,13 +28,23 @@ public class Database {
         close();
     }
 
-    public int insert(String table, Field... fields) {
+    public int insert(String table, String[] columns, Data[] data) {
         var sb = new StringBuffer("INSERT INTO ").append(name).append("(");
-        StringUtil.insertSymbol(sb, ",", fields, field -> field.getColumn().getName());
+        StringUtil.insertSymbol(sb, ",", columns);
         sb.append(") VALUES(");
-        StringUtil.insertSymbol(sb, ",", fields, field -> " ? ");
+        StringUtil.insertSymbol(sb, ",", columns, column -> "?");
         sb.append(")");
-        return executeUpdate(sb.toString());
+        return executeUpdate(sb.toString(), data);
+    }
+
+    public ResultSet select(String table, String[] columns, String where, Data[] data) {
+        var sb = new StringBuffer("SELECT ");
+        StringUtil.insertSymbol(sb, ",", columns);
+        sb.append(" FROM ").append(table);
+        if (where != null) {
+            sb.append(" WHERE ").append(where);
+        }
+        return executeQuery(sb.toString(), data);
     }
 
     public void migrate() {
