@@ -92,6 +92,10 @@ public class Table {
         return this.name.equals(name);
     }
 
+    public boolean equalsColumn(Columns columns) {
+        return this.columns.equals(columns);
+    }
+
     public boolean equalsDatabase(Database database) {
         return this.database.equals(database);
     }

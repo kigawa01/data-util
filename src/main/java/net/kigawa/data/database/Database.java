@@ -157,7 +157,8 @@ public class Database {
 
     public Table getTable(String name, Columns columns, boolean migrate) {
         for (Table table : tableSet) {
-            if (table.getName().equals(name) && table.getDatabase().equals(this)) return table;
+            if (table.equalsName(name) && table.equalsColumn(columns)) return table;
+            if (table.equalsName(name)) return null;
         }
         var table = new Table(logger, this, name, columns, migrate);
         tableSet.add(table);

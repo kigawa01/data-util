@@ -1,28 +1,19 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.Data;
+import net.kigawa.kutil.log.log.Logger;
 
 public class Field {
     private final Column column;
     private final Record record;
-    private Data data;
+    private final Logger logger;
 
-    protected Field(Record record, Column column, Data data) {
-        this.data = data;
+    protected Field(Record record, Column column) {
         this.column = column;
         this.record = record;
+        logger = record.getLogger();
     }
 
     public Column getColumn() {
         return column;
-    }
-
-    public Data getData() {
-        return data;
-    }
-
-    public Field setData(Data data) {
-        this.data = data;
-        return this;
     }
 }
