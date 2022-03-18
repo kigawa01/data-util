@@ -17,34 +17,8 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 
-class DataBaseManagerTest extends Assertions {
-    public static String DB_TYPE = "mysql";
-    public static String USER = "kigawa";
-    public static String HOST = "192.168.0.18";
-    public static String DB_NAME = "test";
-    public static String PORT = "3306";
-    public static String password;
-    public static String url;
-    private final Logger logger = new Logger("test", null, Level.INFO, null);
-    private Connection connection;
+public class DataBaseManagerTest extends AbstractDatabaseTest {
 
-    private DataBaseManagerTest() throws SQLException {
-        logger.enable();
-
-        for (Handler handler : logger.getParent().getHandlers()) {
-            if (handler instanceof ConsoleHandler) handler.setFormatter(new Formatter());
-        }
-        File config = KutilFile.getRelativeFile("test.pass");
-
-        try {
-            if (!config.exists()) config.createNewFile();
-            password = new BufferedReader(new FileReader(config)).readLine();
-        } catch (IOException e) {
-            logger.warning(e);
-        }
-        url = "jdbc:" + DB_TYPE + "://" + USER + ":" + password + "@" + HOST + ":" + PORT;
-        connection = DriverManager.getConnection(url);
-    }
 
     @Test
     void getDatabase() throws SQLException {
