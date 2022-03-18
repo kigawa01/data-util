@@ -37,13 +37,25 @@ public class Table {
     }
 
     public boolean canUse() {
+        if (!isExist()) return false;
+        if (!isSyncColumn()) return false;
+
+        return true;
+    }
+
+    public boolean isExist() {
         var result = database.executeQuery("SHOW TABLES LIKE " + name);
         if (result == null) return false;
         try {
-            if (result.next()) return true;
+            if (!result.next()) return false;
         } catch (SQLException e) {
             logger.warning(e);
+            return false;
         }
+        return true;
+    }
+
+    public boolean isSyncColumn() {
         return false;
     }
 

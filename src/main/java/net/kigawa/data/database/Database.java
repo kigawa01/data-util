@@ -65,7 +65,7 @@ public class Database {
     public void createDB() {
         logger.info("create DB: " + name);
         createConnection();
-        executeUpdate("CREATE DATABASE IF NOT EXIST " + name);
+        executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
         executeUpdate("use " + name);
         close();
     }
@@ -89,12 +89,14 @@ public class Database {
     public ResultSet executeQuery(String sql, Data... data) {
         try {
             var st = getPreparedStatement(sql);
-            if (st == null) return null;
+            if (st == null) {
+                logger.warning("can not execute");
+                return null;
+            }
             for (Data data1 : data) {
                 data1.addDataToStatement(st);
             }
             var result = st.executeQuery();
-            st.close();
             return result;
         } catch (SQLException e) {
             logger.warning(e);
@@ -116,8 +118,13 @@ public class Database {
 
     public PreparedStatement getPreparedStatement(String sql) {
         try {
-            return getConnection().prepareStatement(sql);
-        } catch (Exception e) {
+            var connection = getConnection();
+            if (connection == null) {
+                logger.warning("can not create statement");
+                return null;
+            }
+            return connection.prepareStatement(sql);
+        } catch (SQLException e) {
             logger.warning(e);
             return null;
         }
@@ -125,7 +132,10 @@ public class Database {
 
     public synchronized Connection getConnection() {
         try {
-            if (connection == null || connection.isClosed()) logger.warning("connection is closed!");
+            if (connection == null || connection.isClosed()) {
+                logger.warning("connection is closed!");
+                return null;
+            }
             return connection;
         } catch (Exception e) {
             logger.warning(e);
@@ -145,10 +155,18 @@ public class Database {
     }
 
     public boolean canUse() {
+        if (!isExist()) return false;
+        return true;
+    }
+
+    public boolean isExist() {
         try {
-            ResultSet resultSet = getPreparedStatement("SELECT database()").executeQuery();
-            if (!resultSet.next()) return false;
-            return (name.equalsIgnoreCase(resultSet.getString("database()")));
+            createConnection();
+            ResultSet resultSet = executeQuery("SELECT database()");
+            if (resultSet == null || !resultSet.next()) return false;
+            var result = name.equalsIgnoreCase(resultSet.getString("database()"));
+            close();
+            return result;
         } catch (SQLException e) {
             logger.warning(e);
             return false;
