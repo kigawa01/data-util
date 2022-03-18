@@ -24,8 +24,9 @@ public class Database {
         this.logger = logger;
         this.migrate = migrate;
 
+        createConnection();
         if (migrate) migrate();
-
+        executeUpdate("USE " + name);
         close();
     }
 
@@ -38,7 +39,7 @@ public class Database {
     }
 
     public int update(String table, String[] columns, String where, Data... data) {
-        var sb = new StringBuffer("UPDATE ").append(table).append(" ");
+        var sb = new StringBuffer("UPDATE ").append(table).append(" SET ");
         KutilString.insertSymbol(sb, ",", columns, column -> column + "=?");
         if (where != null) {
             sb.append(" WHERE ").append(where);
@@ -46,11 +47,11 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public int insert(String table, String[] columns, Data[] data) {
+    public int insert(String table, String[] columns, Data... data) {
         var sb = new StringBuffer("INSERT INTO ").append(table).append("(");
-        StringUtil.insertSymbol(sb, ",", columns);
+        KutilString.insertSymbol(sb, ",", columns);
         sb.append(") VALUES(");
-        StringUtil.insertSymbol(sb, ",", columns, column -> "?");
+        KutilString.insertSymbol(sb, ",", columns, column -> "?");
         sb.append(")");
         return executeUpdate(sb.toString(), data);
     }
@@ -73,18 +74,16 @@ public class Database {
 
     public void createDB() {
         logger.info("create DB: " + name);
-        createConnection();
         executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
         executeUpdate("use " + name);
-        close();
     }
 
     public int executeUpdate(String sql, Data... data) {
         try {
             var st = getPreparedStatement(sql);
             if (st == null) return -1;
-            for (Data data1 : data) {
-                data1.addDataToStatement(st);
+            for (int i = 0; i < data.length; i++) {
+                data[i].addDataToStatement(i + 1, st);
             }
             var result = st.executeUpdate();
             st.close();
@@ -102,11 +101,10 @@ public class Database {
                 logger.warning("can not execute");
                 return null;
             }
-            for (Data data1 : data) {
-                data1.addDataToStatement(st);
+            for (int i = 0; i < data.length; i++) {
+                data[i].addDataToStatement(i + 1, st);
             }
-            var result = st.executeQuery();
-            return result;
+            return st.executeQuery();
         } catch (SQLException e) {
             logger.warning(e);
             return null;
@@ -170,12 +168,9 @@ public class Database {
 
     public boolean isExist() {
         try {
-            createConnection();
             ResultSet resultSet = executeQuery("SELECT database()");
             if (resultSet == null || !resultSet.next()) return false;
-            var result = name.equalsIgnoreCase(resultSet.getString("database()"));
-            close();
-            return result;
+            return name.equalsIgnoreCase(resultSet.getString("database()"));
         } catch (SQLException e) {
             logger.warning(e);
             return false;

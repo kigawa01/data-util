@@ -44,7 +44,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
         } catch (IOException e) {
             logger.warning(e);
         }
-        url = "jdbc:" + DB_TYPE + "://" + USER + ":" + password + "@" + HOST + ":" + PORT;
+        url = "jdbc:" + DB_TYPE + "://" + USER + ":" + password + "@" + HOST + ":" + PORT + "/" + DB_NAME;
         try {
             connection = DriverManager.getConnection(url);
         } catch (SQLException e) {
@@ -62,7 +62,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
             connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + DB_NAME).executeUpdate();
             connection.prepareStatement("USE " + DB_NAME).executeUpdate();
             connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(id int, name varchar(10))").executeUpdate();
-            connection.prepareStatement("INSERT INTO " + TABLE_NAME + "(id,name) VALUES(1,name)");
+            connection.prepareStatement("INSERT INTO " + TABLE_NAME + "(id,name) VALUES(0,'name')").executeUpdate();
         } catch (SQLException e) {
             logger.warning(e);
         }
