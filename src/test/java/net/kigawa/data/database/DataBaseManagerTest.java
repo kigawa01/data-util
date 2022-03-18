@@ -23,10 +23,8 @@ public class DataBaseManagerTest extends AbstractDatabaseTest {
     @Test
     void getDatabase() throws SQLException {
 
-        DataBaseManager manager = new DataBaseManager(logger);
-        manager.enable();
 
-        connection.prepareStatement("DROP DATABASE " + DB_NAME).executeUpdate();
+        connection.prepareStatement("DROP DATABASE IF EXISTS " + DB_NAME).executeUpdate();
 
         Database database = manager.getDatabase(url, DB_NAME, true);
         Database database1 = manager.getDatabase(url, DB_NAME, true);

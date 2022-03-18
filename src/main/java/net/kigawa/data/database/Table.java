@@ -24,7 +24,7 @@ public class Table {
         if (migrate) migrate();
     }
 
-    public int update(String[] columns, String where, Data data) {
+    public int update(String[] columns, String where, Data... data) {
         return database.update(name, columns, where, data);
     }
 

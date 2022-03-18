@@ -4,6 +4,7 @@ import net.kigawa.kutil.kutil.KutilFile;
 import net.kigawa.kutil.log.log.Formatter;
 import net.kigawa.kutil.log.log.Logger;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,12 +21,14 @@ public abstract class AbstractDatabaseTest extends Assertions {
     public static String DB_TYPE = "mysql";
     public static String USER = "kigawa";
     public static String HOST = "192.168.0.18";
-    public static String DB_NAME = "test";
+    public static String DB_NAME = "test_db";
+    public static String TABLE_NAME = "test_table";
     public static String PORT = "3306";
     public static String password;
     public static String url;
     protected final Logger logger = new Logger("test", null, Level.INFO, null);
     protected Connection connection;
+    protected DataBaseManager manager;
 
     public AbstractDatabaseTest() {
         logger.enable();
@@ -44,6 +47,22 @@ public abstract class AbstractDatabaseTest extends Assertions {
         url = "jdbc:" + DB_TYPE + "://" + USER + ":" + password + "@" + HOST + ":" + PORT;
         try {
             connection = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            logger.warning(e);
+        }
+
+        manager = new DataBaseManager(logger);
+        manager.enable();
+    }
+
+    @BeforeEach
+    public void setUpDatabase() {
+        try {
+            connection.prepareStatement("DROP DATABASE IF EXISTS " + DB_NAME).executeUpdate();
+            connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + DB_NAME).executeUpdate();
+            connection.prepareStatement("USE " + DB_NAME).executeUpdate();
+            connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(id int, name varchar(10))").executeUpdate();
+            connection.prepareStatement("INSERT INTO " + TABLE_NAME + "(id,name) VALUES(1,name)");
         } catch (SQLException e) {
             logger.warning(e);
         }
