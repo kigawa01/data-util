@@ -44,7 +44,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
         } catch (IOException e) {
             logger.warning(e);
         }
-        url = "jdbc:" + DB_TYPE + "://" + USER + ":" + password + "@" + HOST + ":" + PORT + "/" + DB_NAME;
+        url = "jdbc:" + DB_TYPE + "://" + USER + ":" + password + "@" + HOST + ":" + PORT + "/";
         try {
             connection = DriverManager.getConnection(url);
         } catch (SQLException e) {

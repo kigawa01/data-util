@@ -2,7 +2,6 @@ package net.kigawa.data.database;
 
 import net.kigawa.data.data.Data;
 import net.kigawa.kutil.kutil.KutilString;
-import net.kigawa.kutil.kutil.string.StringUtil;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
@@ -56,9 +55,9 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public ResultSet select(String table, String[] columns, String where, Data[] data) {
+    public ResultSet select(String table, String[] columns, String where, Data... data) {
         var sb = new StringBuffer("SELECT ");
-        StringUtil.insertSymbol(sb, ",", columns);
+        KutilString.insertSymbol(sb, ",", columns);
         sb.append(" FROM ").append(table);
         if (where != null) {
             sb.append(" WHERE ").append(where);
@@ -66,16 +65,16 @@ public class Database {
         return executeQuery(sb.toString(), data);
     }
 
-    public void migrate() {
+    private void migrate() {
         logger.info("migrate DB: " + name);
         if (canUse()) return;
         createDB();
     }
 
-    public void createDB() {
+    private void createDB() {
         logger.info("create DB: " + name);
         executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
-        executeUpdate("use " + name);
+        executeUpdate("USE " + name);
     }
 
     public int executeUpdate(String sql, Data... data) {
@@ -154,7 +153,10 @@ public class Database {
         session = 0;
         try {
             session++;
-            if (connection == null || connection.isClosed()) connection = DriverManager.getConnection(url);
+            if (connection == null || connection.isClosed()) {
+                connection = DriverManager.getConnection(url);
+                executeUpdate("USE " + name);
+            }
         } catch (Exception e) {
             logger.warning(e);
             connection = null;
