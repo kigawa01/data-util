@@ -56,7 +56,14 @@ public class Table {
     }
 
     public boolean isSyncColumn() {
-        return false;
+        var result = database.executeQuery("SHOW columns FROM " + name);
+        if (result == null) return false;
+        try {
+            return columns.equalsResultSet(result);
+        } catch (SQLException e) {
+            logger.warning(e);
+            return false;
+        }
     }
 
     public void migrate() {

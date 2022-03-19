@@ -1,34 +1,36 @@
 package net.kigawa.data.database;
 
-import net.kigawa.kutil.kutil.KutilArray;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Columns {
-    private final Column[] columns;
+    private final Map<String, Column> columnMap = new HashMap<>();
 
     public Columns(Column... columns) {
-        this.columns = columns;
-    }
-
-    void onSelect(StringBuffer sb) {
-
-    }
-
-    public int getIndex(Column column) {
-        for (int i = 0; i < size(); i++) {
-            if (column.equals(columns[i])) return i;
+        for (Column column : columns) {
+            columnMap.put(column.getName(), column);
         }
-        return -1;
     }
 
     public boolean contain(Column column) {
-        return KutilArray.contain(columns, column);
+        return columnMap.containsValue(column);
     }
 
-    public int size() {
-        return columns.length;
-    }
-
-    public Column getLabel(int index) {
-        return columns[index];
+    public boolean equalsResultSet(ResultSet resultSet) throws SQLException {
+        int size = 0;
+        while (resultSet.next()) {
+            size++;
+            var column = columnMap.get(resultSet.getString("Field"));
+            if (column == null) return false;
+            if (!column.getDataType().equals(resultSet.getString("Type"))) return false;
+            if (!column.canNull() == resultSet.getBoolean("Null")) return false;
+            if (!column.getKeyType().equals(resultSet.getString("Key"))) return false;
+            if (!column.getDefaultData().equalsData(column.getDataType().getData("Default", resultSet))) return false;
+            if (!column.getExtraType().equals(resultSet.getString("Extra"))) return false;
+        }
+        if (size != columnMap.size()) return false;
+        return true;
     }
 }
