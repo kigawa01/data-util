@@ -1,6 +1,8 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.data.Data;
+import net.kigawa.data.data.StringData;
+import net.kigawa.kutil.kutil.KutilString;
 import net.kigawa.kutil.kutil.list.GenerateMap;
 import net.kigawa.kutil.log.log.Logger;
 
@@ -21,7 +23,9 @@ public class Table {
         this.logger = logger;
         recordMap = new GenerateMap<>(data -> new Record(logger, this, columns, data));
 
+        database.createConnection();
         if (migrate) migrate();
+        database.close();
     }
 
     public int update(String[] columns, String where, Data... data) {
@@ -38,13 +42,12 @@ public class Table {
 
     public boolean canUse() {
         if (!isExist()) return false;
-        if (!isSyncColumn()) return false;
 
         return true;
     }
 
     public boolean isExist() {
-        var result = database.executeQuery("SHOW TABLES LIKE " + name);
+        var result = database.executeQuery("SHOW TABLES LIKE ?", new StringData(name));
         if (result == null) return false;
         try {
             if (!result.next()) return false;
@@ -55,17 +58,6 @@ public class Table {
         return true;
     }
 
-    public boolean isSyncColumn() {
-        var result = database.executeQuery("SHOW columns FROM " + name);
-        if (result == null) return false;
-        try {
-            return columns.equalsResultSet(result);
-        } catch (SQLException e) {
-            logger.warning(e);
-            return false;
-        }
-    }
-
     public void migrate() {
         logger.info("migrate table: " + name);
         if (!canUse()) return;
@@ -74,7 +66,13 @@ public class Table {
 
     public void createTable() {
         logger.info("create table: " + name);
-        database.executeUpdate("CREATE TABLE IF NOT EXIST " + name);
+        var sb = new StringBuffer("CREATE TABLE IF NOT EXISTS " + name + " (");
+
+        KutilString.insertSymbol(sb, ",", columns, column -> column.getName() + " " + column.getDataType().getSql() + " " + column.getOptionSql());
+
+        sb.append(")");
+
+        database.executeUpdate(sb.toString());
         database.close();
     }
 

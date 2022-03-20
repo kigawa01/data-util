@@ -7,13 +7,13 @@ import net.kigawa.data.data.KeyType;
 
 public class Column {
     private final String name;
-    private final DataType dataType;
+    private final DataType<? extends Data> dataType;
     private final boolean canNull;
     private final KeyType keyType;
     private final Data defaultData;
     private final ExtraType extraType;
 
-    protected Column(String name, DataType dataType, boolean canNull, KeyType keyType, Data defaultData, ExtraType extraType) {
+    protected Column(String name, DataType<? extends Data> dataType, boolean canNull, KeyType keyType, Data defaultData, ExtraType extraType) {
         this.name = name;
         this.dataType = dataType;
         this.canNull = canNull;
@@ -22,28 +22,17 @@ public class Column {
         this.extraType = extraType;
     }
 
-    public ExtraType getExtraType() {
-        return extraType;
+    public DataType<? extends Data> getDataType() {
+        return dataType;
     }
 
-    public Data getDefaultData() {
-        return defaultData;
-    }
-
-    public KeyType getKeyType() {
-        return keyType;
-    }
-
-    public boolean canNull() {
-        return canNull;
+    public String getOptionSql(){
+        //todo
+        return "";
     }
 
     public String getName() {
         return name;
-    }
-
-    public DataType getDataType() {
-        return dataType;
     }
 
     public boolean equals(Column column) {

@@ -65,6 +65,10 @@ public class Database {
         return executeQuery(sb.toString(), data);
     }
 
+    public void remove(Table table) {
+        tableSet.remove(table);
+    }
+
     private void migrate() {
         logger.info("migrate DB: " + name);
         if (canUse()) return;

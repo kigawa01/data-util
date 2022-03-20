@@ -17,12 +17,12 @@ public class Record {
         this.key = key;
         this.logger = logger;
         this.table = table;
-        fieldMap = new GenerateMap<>(column -> new Field( this, column));
+        fieldMap = new GenerateMap<>(column -> new Field(this, column));
     }
 
-    public Field getField(Column column) {
-        if (!columns.contain(column)) return null;
-        return fieldMap.get(column);
+    public Field getField(String name) {
+        if (!columns.contain(name)) return null;
+        return fieldMap.get(columns.get(name));
     }
 
     public void removeField(Column column) {

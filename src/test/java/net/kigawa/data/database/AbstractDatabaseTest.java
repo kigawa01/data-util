@@ -1,5 +1,7 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.data.IntData;
+import net.kigawa.data.mysql.IntType;
 import net.kigawa.kutil.kutil.KutilFile;
 import net.kigawa.kutil.log.log.Formatter;
 import net.kigawa.kutil.log.log.Logger;
@@ -26,9 +28,14 @@ public abstract class AbstractDatabaseTest extends Assertions {
     public static String PORT = "3306";
     public static String password;
     public static String url;
+    public static Columns columns = new Columns(new Column("id", new IntType(), true, null, null, null));
     protected final Logger logger = new Logger("test", null, Level.INFO, null);
     protected Connection connection;
     protected DataBaseManager manager;
+    protected Database database;
+    protected Table table;
+    protected Record record;
+    protected Field field;
 
     public AbstractDatabaseTest() {
         logger.enable();
@@ -53,6 +60,11 @@ public abstract class AbstractDatabaseTest extends Assertions {
 
         manager = new DataBaseManager(logger);
         manager.enable();
+
+        database = manager.getDatabase(url, DB_NAME, false);
+        table = database.getTable(TABLE_NAME, columns, false);
+        record = table.getRecord(new IntData(0));
+        field = record.getField("name");
     }
 
     @BeforeEach
