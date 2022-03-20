@@ -28,15 +28,23 @@ public class Table {
         database.close();
     }
 
+    public void createConnection() {
+        database.createConnection();
+    }
+
+    public void close() {
+        database.close();
+    }
+
     public int update(String[] columns, String where, Data... data) {
         return database.update(name, columns, where, data);
     }
 
-    public int insert(String[] columns, Data[] data) {
+    public int insert(String[] columns, Data... data) {
         return database.insert(name, columns, data);
     }
 
-    public ResultSet select(String[] columns, String where, Data[] data) {
+    public ResultSet select(String[] columns, String where, Data... data) {
         return database.select(name, columns, where, data);
     }
 

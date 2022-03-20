@@ -70,7 +70,7 @@ public class Database {
     }
 
     private void migrate() {
-        logger.info("migrate DB: " + name);
+        logger.fine("migrate DB: " + name);
         if (canUse()) return;
         createDB();
     }
