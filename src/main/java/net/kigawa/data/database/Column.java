@@ -3,7 +3,7 @@ package net.kigawa.data.database;
 import net.kigawa.data.data.Data;
 import net.kigawa.data.data.DataType;
 import net.kigawa.data.data.ExtraType;
-import net.kigawa.data.data.KeyType;
+import net.kigawa.data.keytype.KeyType;
 
 public class Column {
     private final String name;
@@ -20,6 +20,10 @@ public class Column {
         this.keyType = keyType;
         this.defaultData = defaultData;
         this.extraType = extraType;
+    }
+
+    public KeyType getKeyType() {
+        return keyType;
     }
 
     public DataType<? extends Data> getDataType() {

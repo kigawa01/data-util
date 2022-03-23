@@ -27,8 +27,8 @@ public abstract class AbstractDatabaseTest extends Assertions {
     public static String PORT = "3306";
     public static String password;
     public static String url;
-    public static Columns columns = new Columns(new Column("id", new IntType(), true, null, null, null));
     protected final Logger logger = new Logger("test", null, Level.INFO, null);
+    protected Columns columns;
     protected Connection connection;
     protected DataBaseManager manager;
     protected Database database;
@@ -60,9 +60,10 @@ public abstract class AbstractDatabaseTest extends Assertions {
         manager = new DataBaseManager(logger);
         manager.enable();
 
+        columns = new Columns(logger, new Column("id", new IntType(), true, null, null, null));
         database = manager.getDatabase(url, DB_NAME, false);
         table = database.getTable(TABLE_NAME, columns, false);
-        record = table.getRecord(new WhereSql("id=0"));
+        record = table.getRecord("id=0");
         field = record.getField("name");
     }
 

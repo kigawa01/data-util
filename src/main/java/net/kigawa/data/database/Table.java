@@ -14,7 +14,7 @@ public class Table {
     private final String name;
     private final Columns columns;
     private final Logger logger;
-    private final GenerateMap<WhereSql, Record> recordMap;
+    private final GenerateMap<Data, Record> recordMap;
 
     protected Table(Logger logger, Database dataBase, String name, Columns columns, boolean migrate) {
         this.database = dataBase;
@@ -88,11 +88,11 @@ public class Table {
         database.executeUpdate("DROP TABLE " + name);
     }
 
-    public void removeRecord(Data key) {
-        recordMap.remove(key);
+    public void removeRecord(String where) {
+        recordMap.remove(where);
     }
 
-    public Record getRecord(WhereSql whereSql) {
+    public Record getRecord(String whereSql) {
         return recordMap.get(whereSql);
     }
 
