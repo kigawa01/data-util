@@ -1,20 +1,19 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.Data;
 import net.kigawa.kutil.kutil.list.GenerateMap;
 import net.kigawa.kutil.log.log.Logger;
 
 
 public class Record {
     private final Columns columns;
-    private final Data key;
+    private final WhereSql whereSql;
     private final Logger logger;
     private final Table table;
     private final GenerateMap<Column, Field> fieldMap;
 
-    protected Record(Logger logger, Table table, Columns columns, Data key) {
+    protected Record(Logger logger, Table table, Columns columns, WhereSql whereSql) {
         this.columns = columns;
-        this.key = key;
+        this.whereSql = whereSql;
         this.logger = logger;
         this.table = table;
         fieldMap = new GenerateMap<>(column -> new Field(this, column));
@@ -34,6 +33,13 @@ public class Record {
     }
 
     @Override
+    public int hashCode() {
+        return table.hashCode()
+                + whereSql.hashCode()
+                ;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Record) {
             return equalsRecord((Record) o);
@@ -42,14 +48,16 @@ public class Record {
     }
 
     public boolean equalsRecord(Record record) {
-        return equalsTable(record.table) && equalsKey(record.key);
+        return equalsTable(record.table)
+                && equalsWhere(record.whereSql)
+                ;
     }
 
     public boolean equalsTable(Table table) {
         return this.table.equalsTable(table);
     }
 
-    public boolean equalsKey(Data key) {
-        return this.key.equalsData(key);
+    public boolean equalsWhere(WhereSql whereSql) {
+        return this.whereSql.equalsWhereSql(whereSql);
     }
 }

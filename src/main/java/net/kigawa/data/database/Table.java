@@ -14,7 +14,7 @@ public class Table {
     private final String name;
     private final Columns columns;
     private final Logger logger;
-    private final GenerateMap<Data, Record> recordMap;
+    private final GenerateMap<WhereSql, Record> recordMap;
 
     protected Table(Logger logger, Database dataBase, String name, Columns columns, boolean migrate) {
         this.database = dataBase;
@@ -66,13 +66,13 @@ public class Table {
         return true;
     }
 
-    public void migrate() {
+    private void migrate() {
         logger.info("migrate table: " + name);
         if (!canUse()) return;
         createTable();
     }
 
-    public void createTable() {
+    private void createTable() {
         logger.info("create table: " + name);
         var sb = new StringBuffer("CREATE TABLE IF NOT EXISTS " + name + " (");
 
@@ -92,8 +92,8 @@ public class Table {
         recordMap.remove(key);
     }
 
-    public Record getRecord(Data key) {
-        return recordMap.get(key);
+    public Record getRecord(WhereSql whereSql) {
+        return recordMap.get(whereSql);
     }
 
     public Database getDatabase() {

@@ -21,42 +21,26 @@ class TableTest extends AbstractDatabaseTest {
     }
 
     @Test
-    void insert() {
-        table.createTable();
-        table.insert(new String[]{"id","name"},new IntData(1),new StringData("insert"));
+    void insert() throws SQLException {
+        table.createConnection();
+        table.insert(new String[]{"id", "name"}, new IntData(1), new StringData("insert"));
         table.close();
 
-        var result=connection.prepareStatement("SELECT name FROM "+TABLE_NAME+" WHERE id=1").executeQuery();
+        var result = connection.prepareStatement("SELECT name FROM " + TABLE_NAME + " WHERE id=1").executeQuery();
 
         assertTrue(result.next());
+        assertEquals("insert", result.getString("name"));
     }
 
     @Test
-    void select() {
-    }
+    void select() throws SQLException {
+        table.createConnection();
+        var result = table.select(new String[]{"name"}, "id=0");
 
-    @Test
-    void canUse() {
-    }
+        assertTrue(result.next());
+        assertEquals("name", result.getString("name"));
 
-    @Test
-    void isExist() {
-    }
-
-    @Test
-    void isSyncColumn() {
-    }
-
-    @Test
-    void migrate() {
-    }
-
-    @Test
-    void createTable() {
-    }
-
-    @Test
-    void deleteTable() {
+        table.close();
     }
 
     @Test
