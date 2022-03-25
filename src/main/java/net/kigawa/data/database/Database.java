@@ -195,7 +195,7 @@ public class Database {
 
         sb.append(")");
 
-        executeUpdate(sb.toString());
+        executeUpdate(sb.toString(), columns.getDefaultData());
         close();
     }
 

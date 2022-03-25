@@ -1,16 +1,13 @@
 package net.kigawa.data.keytype;
 
-public class PrimaryKey extends KeyType {
-    public static String NAME = "PRIMARY KEY";
-
-
+public class UniqueKey extends KeyType {
     @Override
     public boolean equals(String name) {
-        return NAME.equals(name);
+        return getSql().equals(name);
     }
 
     @Override
     public String getSql() {
-        return NAME;
+        return "UNIQUE";
     }
 }

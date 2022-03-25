@@ -1,7 +1,6 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.javadata.JavaData;
-import net.kigawa.data.extratype.ExtraType;
 import net.kigawa.data.keytype.KeyType;
 
 public class Column {
@@ -10,15 +9,15 @@ public class Column {
     private final boolean canNull;
     private final KeyType keyType;
     private final JavaData defaultData;
-    private final ExtraType extraType;
+    private final Extra extra;
 
-    public Column(String name, SqlDataType<? extends JavaData> sqlDataType, boolean canNull, KeyType keyType, JavaData defaultData, ExtraType extraType) {
+    public Column(String name, SqlDataType<? extends JavaData> sqlDataType, boolean canNull, KeyType keyType, JavaData defaultData, Extra extra) {
         this.name = name;
         this.sqlDataType = sqlDataType;
         this.canNull = canNull;
         this.keyType = keyType;
         this.defaultData = defaultData;
-        this.extraType = extraType;
+        this.extra = extra;
     }
 
     public KeyType getKeyType() {
@@ -29,9 +28,17 @@ public class Column {
         return sqlDataType;
     }
 
-    public String getOptionSql(){
-        //todo
-        return "";
+    public JavaData getDefaultData() {
+        return defaultData;
+    }
+
+    public String getOptionSql() {
+        var sb = new StringBuffer();
+        if (keyType != null) sb.append(keyType.getSql()).append(" ");
+        if (!canNull) sb.append("NOT NULL ");
+        if (defaultData != null) sb.append("DEFAULT ? ");
+        if (extra != null) sb.append(extra.getSql()).append(" ");
+        return sb.toString();
     }
 
     public String getName() {
