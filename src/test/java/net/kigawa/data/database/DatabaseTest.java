@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-class DatabaseTest extends AbstractDatabaseTest {
+public class DatabaseTest extends AbstractDatabaseTest {
 
     protected Database database;
 
@@ -16,7 +16,7 @@ class DatabaseTest extends AbstractDatabaseTest {
     }
 
     @Test
-    void update() throws SQLException {
+    public void update() throws SQLException {
         database.createConnection();
         database.update(TABLE_NAME, new String[]{"name"}, "id=0", new StringData("update"));
         database.close();
@@ -28,7 +28,7 @@ class DatabaseTest extends AbstractDatabaseTest {
     }
 
     @Test
-    void insert() throws SQLException {
+    public void insert() throws SQLException {
         database.createConnection();
         database.insert(TABLE_NAME, new String[]{"id", "name"}, new IntData(1), new StringData("insert"));
         database.close();
@@ -40,7 +40,7 @@ class DatabaseTest extends AbstractDatabaseTest {
     }
 
     @Test
-    void select() throws SQLException {
+    public void select() throws SQLException {
         database.createConnection();
         var result = database.select(TABLE_NAME, new String[]{"id", "name"}, "id=0");
 
@@ -51,7 +51,7 @@ class DatabaseTest extends AbstractDatabaseTest {
     }
 
     @Test
-    void delete() throws SQLException {
+    public void delete() throws SQLException {
         database.createConnection();
         database.delete(TABLE_NAME, "id=0");
         database.close();
@@ -62,14 +62,14 @@ class DatabaseTest extends AbstractDatabaseTest {
     }
 
     @Test
-    void getTable() throws SQLException {
+    public void getTable() throws SQLException {
         connection.prepareStatement("DROP TABLE " + TABLE_NAME);
 
         database.removeTable(table);
 
         table = database.getTable(TABLE_NAME, columns, true);
 
-        var result = connection.prepareStatement("SHOW TABLES LIKE '" + TABLE_NAME+"'" ).executeQuery();
+        var result = connection.prepareStatement("SHOW TABLES LIKE '" + TABLE_NAME + "'").executeQuery();
 
         assertTrue(result.next());
         assertEquals(result.getString(1), TABLE_NAME);

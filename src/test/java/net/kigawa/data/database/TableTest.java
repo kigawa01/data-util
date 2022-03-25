@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-class TableTest extends AbstractDatabaseTest {
+public class TableTest extends AbstractDatabaseTest {
 
     @Test
     void update() throws SQLException {
