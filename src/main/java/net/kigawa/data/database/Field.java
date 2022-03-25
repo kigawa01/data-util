@@ -32,7 +32,6 @@ public class Field {
         return record.select(new String[]{column.getName()});
     }
 
-
     public Column getColumn() {
         return column;
     }

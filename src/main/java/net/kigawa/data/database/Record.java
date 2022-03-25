@@ -2,11 +2,12 @@ package net.kigawa.data.database;
 
 import net.kigawa.data.data.JavaData;
 import net.kigawa.kutil.kutil.Kutil;
-import net.kigawa.kutil.kutil.list.GenerateMap;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.ResultSet;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Record {
@@ -14,14 +15,16 @@ public class Record {
     private final JavaData key;
     private final Logger logger;
     private final Table table;
-    private final GenerateMap<Column, Field> fieldMap;
+    private final Map<Column, Field> fieldMap = new HashMap<>();
 
     protected Record(Logger logger, Table table, Columns columns, JavaData key) {
         this.columns = columns;
         this.key = key;
         this.logger = logger;
         this.table = table;
-        fieldMap = new GenerateMap<>(column -> new Field(this, column));
+        for (Column column : columns) {
+            fieldMap.put(column, new Field(this, column));
+        }
     }
 
     public void createConnection() {
