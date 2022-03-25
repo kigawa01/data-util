@@ -65,7 +65,7 @@ class DatabaseTest extends AbstractDatabaseTest {
     void getTable() throws SQLException {
         connection.prepareStatement("DROP TABLE " + TABLE_NAME);
 
-        database.remove(table);
+        database.removeTable(table);
 
         table = database.getTable(TABLE_NAME, columns, true);
 

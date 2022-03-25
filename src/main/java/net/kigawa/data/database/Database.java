@@ -59,7 +59,7 @@ public class Database {
         return executeQuery(sb.toString(), data);
     }
 
-    public void remove(Table table) {
+    public void removeTable(Table table) {
         tableSet.remove(table);
     }
 
@@ -197,6 +197,11 @@ public class Database {
 
         executeUpdate(sb.toString());
         close();
+    }
+
+    public void dropTable(Table table) {
+        dropTable(table.getName());
+        removeTable(table);
     }
 
     public String getName() {

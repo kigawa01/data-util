@@ -64,7 +64,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
         columns = new Columns(logger, new Column("id", new IntType(), true, null, null, null));
         database = manager.getDatabase(url, DB_NAME, false);
         table = database.getTable(TABLE_NAME, columns, false);
-        record = table.getRecord(new IntData(0));
+        record = table.getRecord(new IntData(0), false);
         field = record.getField("name");
     }
 

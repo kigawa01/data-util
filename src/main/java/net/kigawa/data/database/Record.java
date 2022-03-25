@@ -86,6 +86,10 @@ public class Record {
         return logger;
     }
 
+    public JavaData getKey() {
+        return key;
+    }
+
     @Override
     public int hashCode() {
         return table.hashCode()
