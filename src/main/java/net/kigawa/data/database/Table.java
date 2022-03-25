@@ -1,6 +1,6 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.Data;
+import net.kigawa.data.data.JavaData;
 import net.kigawa.data.data.StringData;
 import net.kigawa.kutil.kutil.KutilString;
 import net.kigawa.kutil.kutil.list.GenerateMap;
@@ -14,7 +14,7 @@ public class Table {
     private final String name;
     private final Columns columns;
     private final Logger logger;
-    private final GenerateMap<Data, Record> recordMap;
+    private final GenerateMap<JavaData, Record> recordMap;
 
     protected Table(Logger logger, Database dataBase, String name, Columns columns, boolean migrate) {
         this.database = dataBase;
@@ -36,15 +36,15 @@ public class Table {
         database.close();
     }
 
-    public int update(String[] columns, String where, Data... data) {
+    public int update(String[] columns, String where, JavaData... data) {
         return database.update(name, columns, where, data);
     }
 
-    public int insert(String[] columns, Data... data) {
+    public int insert(String[] columns, JavaData... data) {
         return database.insert(name, columns, data);
     }
 
-    public ResultSet select(String[] columns, String where, Data... data) {
+    public ResultSet select(String[] columns, String where, JavaData... data) {
         return database.select(name, columns, where, data);
     }
 
@@ -76,7 +76,7 @@ public class Table {
         logger.info("create table: " + name);
         var sb = new StringBuffer("CREATE TABLE IF NOT EXISTS " + name + " (");
 
-        KutilString.insertSymbol(sb, ",", columns, column -> column.getName() + " " + column.getDataType().getSql() + " " + column.getOptionSql());
+        KutilString.insertSymbol(sb, ",", columns, column -> column.getName() + " " + column.getSqlDataType().getSql() + " " + column.getOptionSql());
 
         sb.append(")");
 

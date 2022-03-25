@@ -1,6 +1,6 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.Data;
+import net.kigawa.data.data.JavaData;
 import net.kigawa.kutil.kutil.Kutil;
 import net.kigawa.kutil.kutil.list.GenerateMap;
 import net.kigawa.kutil.log.log.Logger;
@@ -11,12 +11,12 @@ import java.util.Arrays;
 
 public class Record {
     private final Columns columns;
-    private final Data key;
+    private final JavaData key;
     private final Logger logger;
     private final Table table;
     private final GenerateMap<Column, Field> fieldMap;
 
-    protected Record(Logger logger, Table table, Columns columns, Data key) {
+    protected Record(Logger logger, Table table, Columns columns, JavaData key) {
         this.columns = columns;
         this.key = key;
         this.logger = logger;
@@ -32,20 +32,70 @@ public class Record {
         table.close();
     }
 
-    public int update(String[] columns, Data... data) {
-        var list = Arrays.asList(data);
+    public int update(String[] columns, JavaData... javaData) {
+        var list = Arrays.asList(javaData);
         list.add(key);
-        return table.update(columns, this.columns.getKeyName() + "=?", Kutil.getArrangement(list, Data[]::new));
+
+        if (columns.length < 1) {
+            logger.warning("column is not exist!");
+            return -1;
+        }
+        for (int i = 0; i < columns.length; i++) {
+            if (!this.columns.contain(columns[i])) {
+                logger.warning("column: " + columns[i] + " is not exist");
+                return -1;
+            }
+            if (!this.columns.get(i).getSqlDataType().isAllow(javaData[i])) {
+                logger.warning("data is not allowed");
+                return -1;
+            }
+            if (this.columns.getKeyName().equals(columns[i])
+                    && key.equals(javaData[i])) {
+                logger.warning("key is not able to change");
+                return -1;
+            }
+        }
+
+        return table.update(columns, this.columns.getKeyName() + "=?", Kutil.getArrangement(list, JavaData[]::new));
     }
 
-    public int insert(String[] columns, Data... data) {
-        return table.insert(columns, data);
+    public int insert(String[] columns, JavaData... javaData) {
+
+        if (columns.length < 1) {
+            logger.warning("column is not exist!");
+            return -1;
+        }
+        for (int i = 0; i < columns.length; i++) {
+            if (!this.columns.contain(columns[i])) {
+                logger.warning("column: " + columns[i] + " is not exist");
+                return -1;
+            }
+            if (!this.columns.get(columns[i]).getSqlDataType().isAllow(javaData[i])) {
+                logger.warning("data is not allowed");
+                return -1;
+            }
+            if (this.columns.getKeyName().equals(columns[i])
+                    && key.equals(javaData[i])) {
+                logger.warning("key is not able to change");
+                return -1;
+            }
+        }
+
+        return table.insert(columns, javaData);
     }
 
-    public ResultSet select(String[] columns, Data... data) {
-        var list = Arrays.asList(data);
-        list.add(key);
-        return table.select(columns, this.columns.getKeyName() + "=?", Kutil.getArrangement(list, Data[]::new));
+    public ResultSet select(String[] columns) {
+        if (columns.length < 1) {
+            logger.warning("column is not exist!");
+            return null;
+        }
+        for (String column : columns) {
+            if (!this.columns.contain(column)) {
+                logger.warning("column: " + column + " is not exist");
+                return null;
+            }
+        }
+        return table.select(columns, this.columns.getKeyName() + "=?", key);
     }
 
     public Field getField(String name) {
@@ -87,7 +137,9 @@ public class Record {
         return this.table.equalsTable(table);
     }
 
-    public boolean equalsKey(Data key) {
+    public boolean equalsKey(JavaData key) {
         return this.key.equals(key);
     }
+
+
 }

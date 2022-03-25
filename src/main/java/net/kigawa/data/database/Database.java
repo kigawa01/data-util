@@ -1,6 +1,6 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.Data;
+import net.kigawa.data.data.JavaData;
 import net.kigawa.kutil.kutil.KutilString;
 import net.kigawa.kutil.log.log.Logger;
 
@@ -29,7 +29,7 @@ public class Database {
         close();
     }
 
-    public int delete(String table, String where, Data... data) {
+    public int delete(String table, String where, JavaData... data) {
         var sb = new StringBuffer("DELETE FROM ").append(table);
         if (where != null) {
             sb.append(" WHERE ").append(where);
@@ -37,7 +37,7 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public int update(String table, String[] columns, String where, Data... data) {
+    public int update(String table, String[] columns, String where, JavaData... data) {
         var sb = new StringBuffer("UPDATE ").append(table).append(" SET ");
         KutilString.insertSymbol(sb, ",", columns, column -> column + "=?");
         if (where != null) {
@@ -46,7 +46,7 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public int insert(String table, String[] columns, Data... data) {
+    public int insert(String table, String[] columns, JavaData... data) {
         var sb = new StringBuffer("INSERT INTO ").append(table).append("(");
         KutilString.insertSymbol(sb, ",", columns);
         sb.append(") VALUES(");
@@ -55,7 +55,7 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public ResultSet select(String table, String[] columns, String where, Data... data) {
+    public ResultSet select(String table, String[] columns, String where, JavaData... data) {
         var sb = new StringBuffer("SELECT ");
         KutilString.insertSymbol(sb, ",", columns);
         sb.append(" FROM ").append(table);
@@ -81,7 +81,7 @@ public class Database {
         executeUpdate("USE " + name);
     }
 
-    public int executeUpdate(String sql, Data... data) {
+    public int executeUpdate(String sql, JavaData... data) {
         try {
             var st = getPreparedStatement(sql);
             if (st == null) return -1;
@@ -97,7 +97,7 @@ public class Database {
         }
     }
 
-    public ResultSet executeQuery(String sql, Data... data) {
+    public ResultSet executeQuery(String sql, JavaData... data) {
         try {
             var st = getPreparedStatement(sql);
             if (st == null) {

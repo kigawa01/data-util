@@ -9,21 +9,47 @@ import java.util.Map;
 
 public class Columns implements Iterable<Column> {
     private final Map<String, Column> columnMap = new HashMap<>();
+    private String keyName;
 
     public Columns(Logger logger, Column... columns) {
+        this(logger, true, columns);
+    }
+
+    public Columns(Logger logger, boolean keyCheck, Column... columns) {
         for (Column column : columns) {
             columnMap.put(column.getName(), column);
         }
         int count = 0;
         for (Column column : columns) {
-            if (column.getKeyType().equals(PrimaryKey.NAME)) count++;
+            if (column.getKeyType().equals(PrimaryKey.NAME)) {
+                keyName = column.getName();
+                count++;
+            }
         }
-        if (count < 1) logger.warning("there is no key");
-        if (count > 1) logger.warning("key is too many");
+        if (keyCheck && count < 1) logger.warning("there is no key");
+        if (keyCheck && count > 1) logger.warning("key is too many");
+    }
+
+    public int getKeyIndex() {
+        int i = 0;
+        for (String key : columnMap.keySet()) {
+            if (key.equals(keyName)) return i;
+            i++;
+        }
+        return -1;
     }
 
     public String getKeyName() {
+        return keyName;
+    }
 
+    public Column get(int i) {
+        int i1 = 0;
+        for (Column column : this) {
+            if (i1 == i) return column;
+            i1++;
+        }
+        return null;
     }
 
     public Column get(String name) {

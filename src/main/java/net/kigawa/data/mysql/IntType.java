@@ -1,12 +1,12 @@
 package net.kigawa.data.mysql;
 
-import net.kigawa.data.data.DataType;
+import net.kigawa.data.data.SqlDataType;
 import net.kigawa.data.data.IntData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class IntType extends DataType<IntData> {
+public class IntType extends SqlDataType<IntData> {
 
     @Override
     public IntData getData(String key, ResultSet resultSet) throws SQLException {

@@ -1,21 +1,21 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.Data;
-import net.kigawa.data.data.DataType;
+import net.kigawa.data.data.JavaData;
+import net.kigawa.data.data.SqlDataType;
 import net.kigawa.data.data.ExtraType;
 import net.kigawa.data.keytype.KeyType;
 
 public class Column {
     private final String name;
-    private final DataType<? extends Data> dataType;
+    private final SqlDataType<? extends JavaData> sqlDataType;
     private final boolean canNull;
     private final KeyType keyType;
-    private final Data defaultData;
+    private final JavaData defaultData;
     private final ExtraType extraType;
 
-    protected Column(String name, DataType<? extends Data> dataType, boolean canNull, KeyType keyType, Data defaultData, ExtraType extraType) {
+    protected Column(String name, SqlDataType<? extends JavaData> sqlDataType, boolean canNull, KeyType keyType, JavaData defaultData, ExtraType extraType) {
         this.name = name;
-        this.dataType = dataType;
+        this.sqlDataType = sqlDataType;
         this.canNull = canNull;
         this.keyType = keyType;
         this.defaultData = defaultData;
@@ -26,8 +26,8 @@ public class Column {
         return keyType;
     }
 
-    public DataType<? extends Data> getDataType() {
-        return dataType;
+    public SqlDataType<? extends JavaData> getSqlDataType() {
+        return sqlDataType;
     }
 
     public String getOptionSql(){

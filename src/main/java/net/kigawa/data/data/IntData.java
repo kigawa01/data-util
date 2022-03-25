@@ -3,7 +3,7 @@ package net.kigawa.data.data;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class IntData extends Data {
+public class IntData extends JavaData {
     private final int i;
 
     public IntData(int i) {
@@ -16,8 +16,8 @@ public class IntData extends Data {
     }
 
     @Override
-    public boolean equalsData(Data data) {
-        if (data instanceof IntData) return equals((IntData) data);
+    public boolean equalsData(JavaData javaData) {
+        if (javaData instanceof IntData) return equals((IntData) javaData);
         return false;
     }
 
