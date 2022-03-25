@@ -18,7 +18,7 @@ public class DatabaseManager implements Module {
     }
 
     public Database getDatabase(
-            DatabaseType type,
+            String type,
             String userName,
             String password,
             String host,
@@ -27,7 +27,7 @@ public class DatabaseManager implements Module {
             boolean create
     ) {
         return getDatabase(
-                "jdbc:" + type.getName() + "://" + userName + ":" + password + "@" + host + ":" + port + "/",
+                "jdbc:" + type + "://" + userName + ":" + password + "@" + host + ":" + port + "/",
                 databaseName,
                 create
         );
