@@ -27,22 +27,29 @@ public class DataBaseManager implements Module {
     public void createDataBase(String url, String name) {
         try {
             var connection = DriverManager.getConnection(url);
-            connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + name).executeUpdate();
+            logger.fine("execute sql:");
+            connection.prepareStatement(logger.finePass("CREATE DATABASE IF NOT EXISTS " + name)).executeUpdate();
         } catch (SQLException e) {
             logger.warning(e);
         }
     }
 
-    public void dropDataBase(String url, String name) {
+    public void dropDatabase(String url, String name) {
         try {
             var connection = DriverManager.getConnection(url);
-            connection.prepareStatement("DROP DATABASE IF EXISTS " + name).executeUpdate();
+            logger.fine("execute sql:");
+            connection.prepareStatement(logger.finePass("DROP DATABASE IF EXISTS " + name)).executeUpdate();
         } catch (SQLException e) {
             logger.warning(e);
         }
     }
 
-    protected void removeDatabase(Database database) {
+    public void dropDatabase(Database database) {
+        dropDatabase(database.getUrl(), database.getName());
+        removeDatabase(database);
+    }
+
+    public void removeDatabase(Database database) {
         databases.remove(database);
     }
 

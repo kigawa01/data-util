@@ -1,5 +1,6 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.data.IntData;
 import net.kigawa.data.mysql.IntType;
 import net.kigawa.kutil.kutil.KutilFile;
 import net.kigawa.kutil.log.log.Formatter;
@@ -63,7 +64,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
         columns = new Columns(logger, new Column("id", new IntType(), true, null, null, null));
         database = manager.getDatabase(url, DB_NAME, false);
         table = database.getTable(TABLE_NAME, columns, false);
-        record = table.getRecord("id=0");
+        record = table.getRecord(new IntData(0));
         field = record.getField("name");
     }
 

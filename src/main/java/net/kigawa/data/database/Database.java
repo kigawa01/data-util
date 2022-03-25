@@ -1,6 +1,7 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.data.JavaData;
+import net.kigawa.data.data.StringData;
 import net.kigawa.kutil.kutil.KutilString;
 import net.kigawa.kutil.log.log.Logger;
 
@@ -64,6 +65,7 @@ public class Database {
 
     public int executeUpdate(String sql, JavaData... data) {
         try {
+            logger.fine("execute sql:", sql);
             var st = getPreparedStatement(sql);
             if (st == null) return -1;
             for (int i = 0; i < data.length; i++) {
@@ -80,6 +82,7 @@ public class Database {
 
     public ResultSet executeQuery(String sql, JavaData... data) {
         try {
+            logger.fine("execute sql:", sql);
             var st = getPreparedStatement(sql);
             if (st == null) {
                 logger.warning("can not execute");
@@ -148,24 +151,60 @@ public class Database {
         }
     }
 
-    public Table getTable(String name, Columns columns, boolean migrate) {
+    public Table getTable(String name, Columns columns, boolean create) {
+        if (create) createTable(name, columns);
         for (Table table : tableSet) {
             if (table.equalsName(name) && table.equalsColumn(columns)) return table;
-            if (table.equalsName(name)) return null;
+            if (table.equalsName(name)) {
+                logger.warning(name + " is already exists");
+                return null;
+            }
         }
-        var table = new Table(logger, this, name, columns, migrate);
+        var table = new Table(logger, this, name, columns);
         tableSet.add(table);
         return table;
     }
 
-    public void deleteDB() {
-        logger.info("delete DB \"" + name + "\"");
+    public void dropTable(String name) {
+        createConnection();
+        var result = executeQuery("SHOW TABLES LIKE ?", new StringData(name));
+        if (result == null) return;
         try {
-            getPreparedStatement("DROP DATABASE IF EXIST " + name).executeUpdate();
-            close();
+            if (!result.next()) return;
         } catch (SQLException e) {
             logger.warning(e);
         }
+        logger.info("drop table: " + name);
+        executeUpdate("DROP TABLE " + name);
+        close();
+    }
+
+    public void createTable(String name, Columns columns) {
+        createConnection();
+        var result = executeQuery("SHOW TABLES LIKE ?", new StringData(name));
+        if (result == null) return;
+        try {
+            if (result.next()) return;
+        } catch (SQLException e) {
+            logger.warning(e);
+        }
+        logger.info("create table: " + name);
+        var sb = new StringBuffer("CREATE TABLE IF NOT EXISTS " + name + " (");
+
+        KutilString.insertSymbol(sb, ",", columns, column -> column.getName() + " " + column.getSqlDataType().getSql() + " " + column.getOptionSql());
+
+        sb.append(")");
+
+        executeUpdate(sb.toString());
+        close();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public boolean equalsURL(String url) {
