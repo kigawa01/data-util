@@ -11,7 +11,7 @@ public class Column {
     private final JavaData defaultData;
     private final Extra extra;
 
-    private Column(String name, SqlDataType<? extends JavaData> sqlDataType) {
+    public Column(String name, SqlDataType<? extends JavaData> sqlDataType) {
         this(name, sqlDataType, true, null, null, null);
     }
 
