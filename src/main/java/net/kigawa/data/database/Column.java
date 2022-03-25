@@ -12,7 +12,7 @@ public class Column {
     private final JavaData defaultData;
     private final ExtraType extraType;
 
-    protected Column(String name, SqlDataType<? extends JavaData> sqlDataType, boolean canNull, KeyType keyType, JavaData defaultData, ExtraType extraType) {
+    public Column(String name, SqlDataType<? extends JavaData> sqlDataType, boolean canNull, KeyType keyType, JavaData defaultData, ExtraType extraType) {
         this.name = name;
         this.sqlDataType = sqlDataType;
         this.canNull = canNull;
