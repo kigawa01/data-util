@@ -24,16 +24,12 @@ public class Field {
         record.close();
     }
 
-    public int update(String[] columns, JavaData... data) {
-        return record.update(columns, data);
+    public int update(JavaData data) {
+        return record.update(new String[]{column.getName()}, data);
     }
 
-    public int insert(String[] columns, JavaData... data) {
-        return record.insert(columns, data);
-    }
-
-    public ResultSet select(String[] columns, JavaData... data) {
-        return record.select(columns, data);
+    public ResultSet select() {
+        return record.select(new String[]{column.getName()});
     }
 
 

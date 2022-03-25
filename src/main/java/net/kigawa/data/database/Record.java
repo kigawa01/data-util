@@ -59,31 +59,6 @@ public class Record {
         return table.update(columns, this.columns.getKeyName() + "=?", Kutil.getArrangement(list, JavaData[]::new));
     }
 
-    public int insert(String[] columns, JavaData... javaData) {
-
-        if (columns.length < 1) {
-            logger.warning("column is not exist!");
-            return -1;
-        }
-        for (int i = 0; i < columns.length; i++) {
-            if (!this.columns.contain(columns[i])) {
-                logger.warning("column: " + columns[i] + " is not exist");
-                return -1;
-            }
-            if (!this.columns.get(columns[i]).getSqlDataType().isAllow(javaData[i])) {
-                logger.warning("data is not allowed");
-                return -1;
-            }
-            if (this.columns.getKeyName().equals(columns[i])
-                    && key.equals(javaData[i])) {
-                logger.warning("key is not able to change");
-                return -1;
-            }
-        }
-
-        return table.insert(columns, javaData);
-    }
-
     public ResultSet select(String[] columns) {
         if (columns.length < 1) {
             logger.warning("column is not exist!");

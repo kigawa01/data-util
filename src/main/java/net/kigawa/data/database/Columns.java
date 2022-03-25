@@ -30,6 +30,10 @@ public class Columns implements Iterable<Column> {
         if (keyCheck && count > 1) logger.warning("key is too many");
     }
 
+    public int size() {
+        return columnMap.size();
+    }
+
     public int getKeyIndex() {
         int i = 0;
         for (String key : columnMap.keySet()) {
