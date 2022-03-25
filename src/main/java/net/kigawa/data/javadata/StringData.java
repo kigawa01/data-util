@@ -15,6 +15,10 @@ public class StringData extends JavaData {
         statement.setString(index, str);
     }
 
+    public String get() {
+        return str;
+    }
+
     @Override
     public boolean equalsData(JavaData javaData) {
         if (javaData instanceof StringData) return equals((StringData) javaData);

@@ -15,6 +15,10 @@ public class IntData extends JavaData {
         statement.setInt(index, i);
     }
 
+    public int get() {
+        return i;
+    }
+
     @Override
     public boolean equalsData(JavaData javaData) {
         if (javaData instanceof IntData) return equals((IntData) javaData);

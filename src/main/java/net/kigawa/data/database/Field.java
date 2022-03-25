@@ -4,6 +4,7 @@ import net.kigawa.data.javadata.JavaData;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Field {
     private final Column column;
@@ -14,6 +15,22 @@ public class Field {
         this.column = column;
         this.record = record;
         logger = record.getLogger();
+    }
+
+    public JavaData getData() {
+        try {
+            var result = select();
+            return column.getSqlDataType().getData(column.getName(), result);
+        } catch (SQLException e) {
+            logger.warning(e);
+        }
+        return null;
+    }
+
+    public <D extends JavaData> D getData(Class<D> dataClass) {
+        var data = getData();
+        if (dataClass.isInstance(data)) return (D) data;
+        return null;
     }
 
     public void createConnection() {
