@@ -1,8 +1,8 @@
 package net.kigawa.data.mysql;
 
-import net.kigawa.data.data.IntData;
-import net.kigawa.data.data.JavaData;
-import net.kigawa.data.data.SqlDataType;
+import net.kigawa.data.javadata.IntData;
+import net.kigawa.data.javadata.JavaData;
+import net.kigawa.data.database.SqlDataType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,6 +1,6 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.IntData;
+import net.kigawa.data.javadata.IntData;
 import net.kigawa.data.keytype.PrimaryKey;
 import net.kigawa.data.mysql.IntType;
 import net.kigawa.kutil.kutil.KutilFile;
@@ -32,7 +32,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
     protected final Logger logger = new Logger("test", null, Level.INFO, null);
     protected Columns columns;
     protected Connection connection;
-    protected DataBaseManager manager;
+    protected DatabaseManager manager;
     protected Database database;
     protected Table table;
     protected Record record;
@@ -59,7 +59,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
             logger.warning(e);
         }
 
-        manager = new DataBaseManager(logger);
+        manager = new DatabaseManager(logger);
         manager.enable();
 
         columns = new Columns(logger, new Column("id", new IntType(), true, new PrimaryKey(), null, null));

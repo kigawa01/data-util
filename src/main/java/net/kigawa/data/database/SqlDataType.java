@@ -1,4 +1,6 @@
-package net.kigawa.data.data;
+package net.kigawa.data.database;
+
+import net.kigawa.data.javadata.JavaData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

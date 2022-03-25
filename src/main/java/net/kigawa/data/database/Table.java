@@ -1,6 +1,6 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.JavaData;
+import net.kigawa.data.javadata.JavaData;
 import net.kigawa.kutil.kutil.list.GenerateMap;
 import net.kigawa.kutil.log.log.Logger;
 

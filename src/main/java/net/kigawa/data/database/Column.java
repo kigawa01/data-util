@@ -1,8 +1,7 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.JavaData;
-import net.kigawa.data.data.SqlDataType;
-import net.kigawa.data.data.ExtraType;
+import net.kigawa.data.javadata.JavaData;
+import net.kigawa.data.extratype.ExtraType;
 import net.kigawa.data.keytype.KeyType;
 
 public class Column {

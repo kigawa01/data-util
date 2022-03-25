@@ -1,7 +1,7 @@
 package net.kigawa.data.database;
 
-import net.kigawa.data.data.IntData;
-import net.kigawa.data.data.StringData;
+import net.kigawa.data.javadata.IntData;
+import net.kigawa.data.javadata.StringData;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;

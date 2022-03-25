@@ -1,4 +1,4 @@
-package net.kigawa.data.data;
+package net.kigawa.data.javadata;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

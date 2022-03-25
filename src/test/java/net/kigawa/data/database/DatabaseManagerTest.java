@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-public class DataBaseManagerTest extends AbstractDatabaseTest {
+public class DatabaseManagerTest extends AbstractDatabaseTest {
 
 
     @Test

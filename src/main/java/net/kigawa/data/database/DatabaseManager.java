@@ -9,17 +9,33 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class DataBaseManager implements Module {
+public class DatabaseManager implements Module {
     public static Logger logger;
     private final List<Database> databases = new LinkedList<>();
 
-    public DataBaseManager(Logger logger) {
-        DataBaseManager.logger = logger;
+    public DatabaseManager(Logger logger) {
+        DatabaseManager.logger = logger;
     }
 
-    public Database getDatabase(String url, String name, boolean create) {
-        if (create) createDataBase(url, name);
-        var database = new Database(logger, url, name);
+    public Database getDatabase(
+            DatabaseType type,
+            String userName,
+            String password,
+            String host,
+            int port,
+            String databaseName,
+            boolean create
+    ) {
+        return getDatabase(
+                "jdbc:" + type.getName() + "://" + userName + ":" + password + "@" + host + ":" + port + "/",
+                databaseName,
+                create
+        );
+    }
+
+    public Database getDatabase(String url, String databaseName, boolean create) {
+        if (create) createDataBase(url, databaseName);
+        var database = new Database(logger, url, databaseName);
         databases.add(database);
         return database;
     }
