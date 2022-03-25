@@ -13,20 +13,13 @@ public class Database {
     private final String name;
     private final Set<Table> tableSet = new HashSet<>();
     private final Logger logger;
-    private final boolean migrate;
     private Connection connection;
     private int session;
 
-    protected Database(Logger logger, String url, String name, boolean migrate) {
+    protected Database(Logger logger, String url, String name) {
         this.url = url;
         this.name = name;
         this.logger = logger;
-        this.migrate = migrate;
-
-        createConnection();
-        if (migrate) migrate();
-        executeUpdate("USE " + name);
-        close();
     }
 
     public int delete(String table, String where, JavaData... data) {
@@ -67,18 +60,6 @@ public class Database {
 
     public void remove(Table table) {
         tableSet.remove(table);
-    }
-
-    private void migrate() {
-        logger.fine("migrate DB: " + name);
-        if (canUse()) return;
-        createDB();
-    }
-
-    private void createDB() {
-        logger.info("create DB: " + name);
-        executeUpdate("CREATE DATABASE IF NOT EXISTS " + name);
-        executeUpdate("USE " + name);
     }
 
     public int executeUpdate(String sql, JavaData... data) {
@@ -164,22 +145,6 @@ public class Database {
         } catch (Exception e) {
             logger.warning(e);
             connection = null;
-        }
-    }
-
-    public boolean canUse() {
-        if (!isExist()) return false;
-        return true;
-    }
-
-    public boolean isExist() {
-        try {
-            ResultSet resultSet = executeQuery("SELECT database()");
-            if (resultSet == null || !resultSet.next()) return false;
-            return name.equalsIgnoreCase(resultSet.getString("database()"));
-        } catch (SQLException e) {
-            logger.warning(e);
-            return false;
         }
     }
 
