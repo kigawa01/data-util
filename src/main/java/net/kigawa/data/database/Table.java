@@ -12,14 +12,12 @@ public class Table {
     private final String name;
     private final Columns columns;
     private final Logger logger;
-    private final GenerateMap<JavaData, Record> recordMap;
 
     protected Table(Logger logger, Database dataBase, String name, Columns columns) {
         this.database = dataBase;
         this.name = name;
         this.columns = columns;
         this.logger = logger;
-        recordMap = new GenerateMap<>(data -> new Record(logger, this, columns, data));
     }
 
     public void createConnection() {
@@ -46,13 +44,9 @@ public class Table {
         return database.select(name, columns, where, javaData);
     }
 
-    public void removeRecord(JavaData key) {
-        recordMap.remove(key);
-    }
-
     public Record getRecord(JavaData key, boolean create) {
         if (create) insertDefault(key);
-        return recordMap.get(key);
+        return new Record(logger, this, columns, key);
     }
 
     public void insertDefault(JavaData key) {
@@ -72,7 +66,6 @@ public class Table {
 
     public void delete(Record record) {
         delete(columns.getKeyName() + "=?", record.getKey());
-        removeRecord(record.getKey());
     }
 
     public Database getDatabase() {

@@ -6,13 +6,10 @@ import net.kigawa.kutil.kutil.KutilString;
 import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Database {
     private final String url;
     private final String name;
-    private final Set<Table> tableSet = new HashSet<>();
     private final Logger logger;
     private Connection connection;
     private int session;
@@ -59,10 +56,6 @@ public class Database {
         return executeQuery(sb.toString(), data);
     }
 
-    public void removeTable(Table table) {
-        tableSet.remove(table);
-    }
-
     public int executeUpdate(String sql, JavaData... data) {
         try {
             logger.fine("execute sql:", sql);
@@ -98,10 +91,14 @@ public class Database {
         }
     }
 
-    public synchronized void close() {
+    public void close() {
+        close(false);
+    }
+
+    public synchronized void close(boolean face) {
         try {
             session--;
-            if (session > 0) return;
+            if (!face && session > 0) return;
             if (connection == null) return;
             if (!connection.isClosed()) connection.close();
             connection = null;
@@ -153,15 +150,7 @@ public class Database {
 
     public Table getTable(String name, Columns columns, boolean create) {
         if (create) createTable(name, columns);
-        for (Table table : tableSet) {
-            if (table.equalsName(name) && table.equalsColumn(columns)) return table;
-            if (table.equalsName(name)) {
-                logger.warning(name + " is already exists");
-                return null;
-            }
-        }
         var table = new Table(logger, this, name, columns);
-        tableSet.add(table);
         return table;
     }
 
@@ -201,7 +190,6 @@ public class Database {
 
     public void dropTable(Table table) {
         dropTable(table.getName());
-        removeTable(table);
     }
 
     public String getName() {
