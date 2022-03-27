@@ -9,13 +9,17 @@ import java.sql.*;
 
 public class Database {
     private final String url;
+    private final String user;
+    private final String password;
     private final String name;
     private final Logger logger;
     private Connection connection;
     private int session;
 
-    protected Database(Logger logger, String url, String name) {
+    protected Database(Logger logger, String url, String user, String password, String name) {
         this.url = url;
+        this.user = user;
+        this.password = password;
         this.name = name;
         this.logger = logger;
     }
@@ -139,8 +143,8 @@ public class Database {
         try {
             session++;
             if (connection == null || connection.isClosed()) {
-                logger.fine("connect " + url);
-                connection = DriverManager.getConnection(url);
+                logger.fine("connect " + url + " by " + user);
+                connection = DriverManager.getConnection(url, user, password);
                 executeUpdate("USE " + name);
             }
         } catch (Exception e) {
@@ -191,6 +195,14 @@ public class Database {
 
     public void dropTable(Table table) {
         dropTable(table.getName());
+    }
+
+    String getPassword() {
+        return password;
+    }
+
+    public String getUser() {
+        return user;
     }
 
     public String getName() {

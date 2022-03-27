@@ -12,7 +12,7 @@ public class DatabaseTest extends AbstractDatabaseTest {
 
 
     public DatabaseTest() {
-        database = manager.getDatabase(url, DB_NAME, true);
+        database = manager.getDatabase(url, USER, password, DB_NAME, true);
     }
 
     @Test

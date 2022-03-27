@@ -27,23 +27,25 @@ public class DatabaseManager implements Module {
             boolean create
     ) {
         return getDatabase(
-                "jdbc:" + type + "://" + userName + ":" + password + "@" + host + ":" + port + "/",
+                "jdbc:" + type + "://" + host + ":" + port + "/",
+                userName,
+                password,
                 databaseName,
                 create
         );
     }
 
-    public Database getDatabase(String url, String databaseName, boolean create) {
-        if (create) createDataBase(url, databaseName);
-        var database = new Database(logger, url, databaseName);
+    public Database getDatabase(String url, String user, String password, String databaseName, boolean create) {
+        if (create) createDataBase(url, databaseName, user, password);
+        var database = new Database(logger, url, user, password, databaseName);
         databases.add(database);
         return database;
     }
 
-    public void createDataBase(String url, String name) {
+    public void createDataBase(String url, String user, String password, String name) {
         try {
-            logger.fine("connect " + url);
-            var connection = DriverManager.getConnection(url);
+            logger.fine("connect " + url + " by " + user);
+            var connection = DriverManager.getConnection(url, user, password);
             logger.fine("execute sql:");
             connection.prepareStatement(logger.finePass("CREATE DATABASE IF NOT EXISTS " + name)).executeUpdate();
         } catch (SQLException e) {
@@ -51,10 +53,10 @@ public class DatabaseManager implements Module {
         }
     }
 
-    public void dropDatabase(String url, String name) {
+    public void dropDatabase(String url, String user, String password, String name) {
         try {
-            logger.fine("connect " + url);
-            var connection = DriverManager.getConnection(url);
+            logger.fine("connect " + url + " by " + user);
+            var connection = DriverManager.getConnection(url, user, password);
             logger.fine("execute sql:");
             connection.prepareStatement(logger.finePass("DROP DATABASE IF EXISTS " + name)).executeUpdate();
         } catch (SQLException e) {
@@ -63,7 +65,7 @@ public class DatabaseManager implements Module {
     }
 
     public void dropDatabase(Database database) {
-        dropDatabase(database.getUrl(), database.getName());
+        dropDatabase(database.getUrl(), database.getUser(), database.getPassword(), database.getName());
         removeDatabase(database);
     }
 

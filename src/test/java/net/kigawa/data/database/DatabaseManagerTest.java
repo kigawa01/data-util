@@ -13,8 +13,8 @@ public class DatabaseManagerTest extends AbstractDatabaseTest {
 
         connection.prepareStatement("DROP DATABASE IF EXISTS " + DB_NAME).executeUpdate();
 
-        Database database = manager.getDatabase(url, DB_NAME, true);
-        Database database1 = manager.getDatabase(url, DB_NAME, true);
+        Database database = manager.getDatabase(url, USER, password, DB_NAME, true);
+        Database database1 = manager.getDatabase(url, USER, password, DB_NAME, true);
 
 
         //is there db
