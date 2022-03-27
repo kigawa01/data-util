@@ -139,6 +139,7 @@ public class Database {
         try {
             session++;
             if (connection == null || connection.isClosed()) {
+                logger.fine("connect " + url);
                 connection = DriverManager.getConnection(url);
                 executeUpdate("USE " + name);
             }

@@ -42,6 +42,7 @@ public class DatabaseManager implements Module {
 
     public void createDataBase(String url, String name) {
         try {
+            logger.fine("connect " + url);
             var connection = DriverManager.getConnection(url);
             logger.fine("execute sql:");
             connection.prepareStatement(logger.finePass("CREATE DATABASE IF NOT EXISTS " + name)).executeUpdate();
@@ -52,6 +53,7 @@ public class DatabaseManager implements Module {
 
     public void dropDatabase(String url, String name) {
         try {
+            logger.fine("connect " + url);
             var connection = DriverManager.getConnection(url);
             logger.fine("execute sql:");
             connection.prepareStatement(logger.finePass("DROP DATABASE IF EXISTS " + name)).executeUpdate();

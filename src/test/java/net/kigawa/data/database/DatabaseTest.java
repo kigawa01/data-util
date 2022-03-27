@@ -65,8 +65,6 @@ public class DatabaseTest extends AbstractDatabaseTest {
     public void getTable() throws SQLException {
         connection.prepareStatement("DROP TABLE " + TABLE_NAME);
 
-        database.removeTable(table);
-
         table = database.getTable(TABLE_NAME, columns, true);
 
         var result = connection.prepareStatement("SHOW TABLES LIKE '" + TABLE_NAME + "'").executeQuery();
