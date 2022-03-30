@@ -1,5 +1,6 @@
 package net.kigawa.data.database;
 
+import net.kigawa.kutil.kutil.KutilString;
 import net.kigawa.kutil.kutil.interfaces.Module;
 import net.kigawa.kutil.log.log.Logger;
 
@@ -24,10 +25,19 @@ public class DatabaseManager implements Module {
             String host,
             int port,
             String databaseName,
-            boolean create
+            boolean create,
+            UrlOption... options
     ) {
+        var sb = new StringBuffer("jdbc:").append(type).append("://").append(host).append(":")
+                .append(port).append("/");
+
+        if (options.length > 0) {
+            sb.append("?");
+            KutilString.insertSymbol(sb, "&", options, UrlOption::getSql);
+        }
+
         return getDatabase(
-                "jdbc:" + type + "://" + host + ":" + port + "/",
+                sb.toString(),
                 userName,
                 password,
                 databaseName,
@@ -35,7 +45,12 @@ public class DatabaseManager implements Module {
         );
     }
 
-    public Database getDatabase(String url, String user, String password, String databaseName, boolean create) {
+    public Database getDatabase(String url,
+                                String user,
+                                String password,
+                                String databaseName,
+                                boolean create
+    ) {
         if (create) createDataBase(url, databaseName, user, password);
         var database = new Database(logger, url, user, password, databaseName);
         databases.add(database);
