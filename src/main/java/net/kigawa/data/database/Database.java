@@ -14,7 +14,7 @@ public class Database {
     private final String name;
     private final Logger logger;
     private Connection connection;
-    private int session;
+    private int session = 0;
 
     protected Database(Logger logger, String url, String user, String password, String name) {
         this.url = url;
@@ -63,13 +63,17 @@ public class Database {
     public int executeUpdate(String sql, JavaData... data) {
         try {
             logger.fine("execute sql:", sql);
+            createConnection();
             var st = getPreparedStatement(sql);
+
             if (st == null) return -1;
             for (int i = 0; i < data.length; i++) {
                 data[i].addDataToStatement(i + 1, st);
             }
             var result = st.executeUpdate();
-            st.close();
+
+            close();
+
             return result;
         } catch (SQLException e) {
             logger.warning(e);
@@ -139,7 +143,6 @@ public class Database {
     }
 
     public void createConnection() {
-        session = 0;
         try {
             session++;
             if (connection == null || connection.isClosed()) {

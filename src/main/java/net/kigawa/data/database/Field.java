@@ -19,8 +19,12 @@ public class Field {
 
     public JavaData getData() {
         try {
+            createConnection();
             var result = select();
-            return column.getSqlDataType().getData(column.getName(), result);
+            result.next();
+            var data = column.getSqlDataType().getData(column.getName(), result);
+            close();
+            return data;
         } catch (SQLException e) {
             logger.warning(e);
         }

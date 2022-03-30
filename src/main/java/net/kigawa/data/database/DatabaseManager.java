@@ -51,7 +51,7 @@ public class DatabaseManager implements Module {
                                 String databaseName,
                                 boolean create
     ) {
-        if (create) createDataBase(url, databaseName, user, password);
+        if (create) createDataBase(url, user, password, databaseName);
         var database = new Database(logger, url, user, password, databaseName);
         databases.add(database);
         return database;

@@ -7,6 +7,7 @@ import net.kigawa.kutil.log.log.Logger;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 
@@ -36,7 +37,7 @@ public class Record {
     }
 
     public int update(String[] columns, JavaData... javaData) {
-        var list = Arrays.asList(javaData);
+        var list = new LinkedList<>(Arrays.asList(javaData));
         list.add(key);
 
         if (columns.length < 1) {
