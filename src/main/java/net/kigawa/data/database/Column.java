@@ -3,6 +3,9 @@ package net.kigawa.data.database;
 import net.kigawa.data.javadata.JavaData;
 import net.kigawa.data.keytype.KeyType;
 
+/**
+ * @deprecated
+ */
 public class Column {
     private final String name;
     private final SqlDataType<? extends JavaData> sqlDataType;

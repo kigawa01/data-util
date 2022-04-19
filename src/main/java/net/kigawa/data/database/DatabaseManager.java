@@ -10,14 +10,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class DatabaseManager implements Module {
+public class DatabaseManager implements Module
+{
     public static Logger logger;
+    /**
+     * @deprecated
+     */
     private final List<Database> databases = new LinkedList<>();
 
-    public DatabaseManager(Logger logger) {
+    public DatabaseManager(Logger logger)
+    {
         DatabaseManager.logger = logger;
     }
 
+    /**
+     * @deprecated
+     */
     public Database getDatabase(
             String type,
             String userName,
@@ -27,7 +35,8 @@ public class DatabaseManager implements Module {
             String databaseName,
             boolean create,
             UrlOption... options
-    ) {
+    )
+    {
         var sb = new StringBuffer("jdbc:").append(type).append("://").append(host).append(":")
                 .append(port).append("/");
 
@@ -45,19 +54,27 @@ public class DatabaseManager implements Module {
         );
     }
 
+    /**
+     * @deprecated
+     */
     public Database getDatabase(String url,
                                 String user,
                                 String password,
                                 String databaseName,
                                 boolean create
-    ) {
+    )
+    {
         if (create) createDataBase(url, user, password, databaseName);
         var database = new Database(logger, url, user, password, databaseName);
         databases.add(database);
         return database;
     }
 
-    public void createDataBase(String url, String user, String password, String name) {
+    /**
+     * @deprecated
+     */
+    public void createDataBase(String url, String user, String password, String name)
+    {
         try {
             logger.fine("connect " + url + " by " + user);
             var connection = DriverManager.getConnection(url, user, password);
@@ -68,7 +85,11 @@ public class DatabaseManager implements Module {
         }
     }
 
-    public void dropDatabase(String url, String user, String password, String name) {
+    /**
+     * @deprecated
+     */
+    public void dropDatabase(String url, String user, String password, String name)
+    {
         try {
             logger.fine("connect " + url + " by " + user);
             var connection = DriverManager.getConnection(url, user, password);
@@ -79,22 +100,32 @@ public class DatabaseManager implements Module {
         }
     }
 
-    public void dropDatabase(Database database) {
+    /**
+     * @deprecated
+     */
+    public void dropDatabase(Database database)
+    {
         dropDatabase(database.getUrl(), database.getUser(), database.getPassword(), database.getName());
         removeDatabase(database);
     }
 
-    public void removeDatabase(Database database) {
+    /**
+     * @deprecated
+     */
+    public void removeDatabase(Database database)
+    {
         databases.remove(database);
     }
 
     @Override
-    public void enable() {
+    public void enable()
+    {
 
     }
 
     @Override
-    public void disable() {
+    public void disable()
+    {
         for (var database : databases) database.close();
         databases.clear();
     }

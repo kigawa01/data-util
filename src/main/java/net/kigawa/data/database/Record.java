@@ -10,15 +10,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-
-public class Record {
+/**
+ * @deprecated
+ */
+public class Record
+{
     private final Columns columns;
     private final JavaData key;
     private final Logger logger;
     private final Table table;
     private final Map<Column, Field> fieldMap = new HashMap<>();
 
-    protected Record(Logger logger, Table table, Columns columns, JavaData key) {
+    protected Record(Logger logger, Table table, Columns columns, JavaData key)
+    {
         this.columns = columns;
         this.key = key;
         this.logger = logger;
@@ -28,15 +32,18 @@ public class Record {
         }
     }
 
-    public void createConnection() {
+    public void createConnection()
+    {
         table.createConnection();
     }
 
-    public void close() {
+    public void close()
+    {
         table.close();
     }
 
-    public int update(String[] columns, JavaData... javaData) {
+    public int update(String[] columns, JavaData... javaData)
+    {
         var list = new LinkedList<>(Arrays.asList(javaData));
         list.add(key);
 
@@ -63,7 +70,8 @@ public class Record {
         return table.update(columns, this.columns.getKeyName() + "=?", Kutil.getArrangement(list, JavaData[]::new));
     }
 
-    public ResultSet select(String[] columns) {
+    public ResultSet select(String[] columns)
+    {
         if (columns.length < 1) {
             logger.warning("column is not exist!");
             return null;
@@ -77,50 +85,59 @@ public class Record {
         return table.select(columns, this.columns.getKeyName() + "=?", key);
     }
 
-    public Field getField(String name) {
+    public Field getField(String name)
+    {
         if (!columns.contain(name)) return null;
         return fieldMap.get(columns.get(name));
     }
 
-    public void removeField(Column column) {
+    public void removeField(Column column)
+    {
         fieldMap.remove(column);
     }
 
-    public Logger getLogger() {
+    public Logger getLogger()
+    {
         return logger;
     }
 
-    public JavaData getKey() {
+    public JavaData getKey()
+    {
         return key;
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         return table.hashCode()
                 + key.hashCode()
                 ;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (o instanceof Record) {
             return equalsRecord((Record) o);
         }
         return false;
     }
 
-    public boolean equalsRecord(Record record) {
+    public boolean equalsRecord(Record record)
+    {
         if (record == null) return false;
         return equalsTable(record.table)
                 && equalsKey(record.key)
                 ;
     }
 
-    public boolean equalsTable(Table table) {
+    public boolean equalsTable(Table table)
+    {
         return this.table.equalsTable(table);
     }
 
-    public boolean equalsKey(JavaData key) {
+    public boolean equalsKey(JavaData key)
+    {
         return this.key.equals(key);
     }
 

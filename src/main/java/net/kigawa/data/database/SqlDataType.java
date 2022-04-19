@@ -5,7 +5,11 @@ import net.kigawa.data.javadata.JavaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class SqlDataType<D extends JavaData> {
+/**
+ * @deprecated
+ */
+public abstract class SqlDataType<D extends JavaData>
+{
 
     public abstract D getData(String key, ResultSet resultSet) throws SQLException;
 

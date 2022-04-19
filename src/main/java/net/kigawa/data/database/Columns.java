@@ -10,6 +10,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 
+/**
+ * @deprecated
+ */
 public class Columns implements Iterable<Column> {
     private final Map<String, Column> columnMap = new HashMap<>();
     private String keyName;

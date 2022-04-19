@@ -7,7 +7,11 @@ import net.kigawa.kutil.log.log.Logger;
 
 import java.sql.*;
 
-public class Database {
+/**
+ * @deprecated
+ */
+public class Database
+{
     private final String url;
     private final String user;
     private final String password;
@@ -16,7 +20,8 @@ public class Database {
     private Connection connection;
     private int session = 0;
 
-    protected Database(Logger logger, String url, String user, String password, String name) {
+    protected Database(Logger logger, String url, String user, String password, String name)
+    {
         this.url = url;
         this.user = user;
         this.password = password;
@@ -24,7 +29,8 @@ public class Database {
         this.logger = logger;
     }
 
-    public int delete(String table, String where, JavaData... data) {
+    public int delete(String table, String where, JavaData... data)
+    {
         var sb = new StringBuffer("DELETE FROM ").append(table);
         if (where != null) {
             sb.append(" WHERE ").append(where);
@@ -32,7 +38,8 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public int update(String table, String[] columns, String where, JavaData... data) {
+    public int update(String table, String[] columns, String where, JavaData... data)
+    {
         var sb = new StringBuffer("UPDATE ").append(table).append(" SET ");
         KutilString.insertSymbol(sb, ",", columns, column -> column + "=?");
         if (where != null) {
@@ -41,7 +48,8 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public int insert(String table, String[] columns, JavaData... data) {
+    public int insert(String table, String[] columns, JavaData... data)
+    {
         var sb = new StringBuffer("INSERT INTO ").append(table).append("(");
         KutilString.insertSymbol(sb, ",", columns);
         sb.append(") VALUES(");
@@ -50,7 +58,8 @@ public class Database {
         return executeUpdate(sb.toString(), data);
     }
 
-    public ResultSet select(String table, String[] columns, String where, JavaData... data) {
+    public ResultSet select(String table, String[] columns, String where, JavaData... data)
+    {
         var sb = new StringBuffer("SELECT ");
         KutilString.insertSymbol(sb, ",", columns);
         sb.append(" FROM ").append(table);
@@ -60,7 +69,8 @@ public class Database {
         return executeQuery(sb.toString(), data);
     }
 
-    public int executeUpdate(String sql, JavaData... data) {
+    public int executeUpdate(String sql, JavaData... data)
+    {
         try {
             logger.fine("execute sql:", sql);
             createConnection();
@@ -81,7 +91,8 @@ public class Database {
         }
     }
 
-    public ResultSet executeQuery(String sql, JavaData... data) {
+    public ResultSet executeQuery(String sql, JavaData... data)
+    {
         try {
             logger.fine("execute sql:", sql);
             var st = getPreparedStatement(sql);
@@ -99,11 +110,13 @@ public class Database {
         }
     }
 
-    public void close() {
+    public void close()
+    {
         close(false);
     }
 
-    public synchronized void close(boolean face) {
+    public synchronized void close(boolean face)
+    {
         try {
             session--;
             if (!face && session > 0) return;
@@ -115,7 +128,8 @@ public class Database {
         }
     }
 
-    public PreparedStatement getPreparedStatement(String sql) {
+    public PreparedStatement getPreparedStatement(String sql)
+    {
         try {
             var connection = getConnection();
             if (connection == null) {
@@ -129,7 +143,8 @@ public class Database {
         }
     }
 
-    public synchronized Connection getConnection() {
+    public synchronized Connection getConnection()
+    {
         try {
             if (connection == null || connection.isClosed()) {
                 logger.warning("connection is closed!");
@@ -142,7 +157,8 @@ public class Database {
         }
     }
 
-    public void createConnection() {
+    public void createConnection()
+    {
         try {
             session++;
             if (connection == null || connection.isClosed()) {
@@ -156,13 +172,15 @@ public class Database {
         }
     }
 
-    public Table getTable(String name, Columns columns, boolean create) {
+    public Table getTable(String name, Columns columns, boolean create)
+    {
         if (create) createTable(name, columns);
         var table = new Table(logger, this, name, columns);
         return table;
     }
 
-    public void dropTable(String name) {
+    public void dropTable(String name)
+    {
         createConnection();
         var result = executeQuery("SHOW TABLES LIKE ?", new StringData(name));
         if (result == null) return;
@@ -176,7 +194,8 @@ public class Database {
         close();
     }
 
-    public void createTable(String name, Columns columns) {
+    public void createTable(String name, Columns columns)
+    {
         createConnection();
         var result = executeQuery("SHOW TABLES LIKE ?", new StringData(name));
         if (result == null) return;
@@ -196,27 +215,33 @@ public class Database {
         close();
     }
 
-    public void dropTable(Table table) {
+    public void dropTable(Table table)
+    {
         dropTable(table.getName());
     }
 
-    String getPassword() {
+    String getPassword()
+    {
         return password;
     }
 
-    public String getUser() {
+    public String getUser()
+    {
         return user;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public String getUrl() {
+    public String getUrl()
+    {
         return url;
     }
 
-    public boolean equalsURL(String url) {
+    public boolean equalsURL(String url)
+    {
         return this.url.equals(url);
     }
 }

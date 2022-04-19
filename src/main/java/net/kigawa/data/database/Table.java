@@ -7,49 +7,62 @@ import net.kigawa.kutil.log.log.Logger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Table {
+/**
+ * @deprecated
+ */
+public class Table
+{
     private final Database database;
     private final String name;
     private final Columns columns;
     private final Logger logger;
 
-    protected Table(Logger logger, Database dataBase, String name, Columns columns) {
+    protected Table(Logger logger, Database dataBase, String name, Columns columns)
+    {
         this.database = dataBase;
         this.name = name;
         this.columns = columns;
         this.logger = logger;
     }
 
-    public void createConnection() {
+    public void createConnection()
+    {
         database.createConnection();
     }
 
-    public void close() {
+    public void close()
+    {
         database.close();
     }
 
-    public int delete(String where, JavaData... javaData) {
+    public int delete(String where, JavaData... javaData)
+    {
         return database.delete(name, where, javaData);
     }
 
-    public int update(String[] columns, String where, JavaData... javaData) {
+    public int update(String[] columns, String where, JavaData... javaData)
+    {
         return database.update(name, columns, where, javaData);
     }
 
-    public int insert(String[] columns, JavaData... javaData) {
+    public int insert(String[] columns, JavaData... javaData)
+    {
         return database.insert(name, columns, javaData);
     }
 
-    public ResultSet select(String[] columns, String where, JavaData... javaData) {
+    public ResultSet select(String[] columns, String where, JavaData... javaData)
+    {
         return database.select(name, columns, where, javaData);
     }
 
-    public Record getRecord(JavaData key, boolean create) {
+    public Record getRecord(JavaData key, boolean create)
+    {
         if (create) insertDefault(key);
         return new Record(logger, this, columns, key);
     }
 
-    public void insertDefault(JavaData key) {
+    public void insertDefault(JavaData key)
+    {
         try {
             createConnection();
             var result = select(new String[]{columns.getKeyName()}, columns.getKeyName() + "=?", key);
@@ -64,36 +77,44 @@ public class Table {
         close();
     }
 
-    public void delete(Record record) {
+    public void delete(Record record)
+    {
         delete(columns.getKeyName() + "=?", record.getKey());
     }
 
-    public Database getDatabase() {
+    public Database getDatabase()
+    {
         return database;
     }
 
-    public String getName() {
+    public String getName()
+    {
         return name;
     }
 
-    public boolean equals(Object o) {
+    public boolean equals(Object o)
+    {
         if (o instanceof Table) return equalsTable((Table) o);
         return false;
     }
 
-    public boolean equalsTable(Table table) {
+    public boolean equalsTable(Table table)
+    {
         return equalsDatabase(table.database) && equalsName(table.name);
     }
 
-    public boolean equalsName(String name) {
+    public boolean equalsName(String name)
+    {
         return this.name.equals(name);
     }
 
-    public boolean equalsColumn(Columns columns) {
+    public boolean equalsColumn(Columns columns)
+    {
         return this.columns.equals(columns);
     }
 
-    public boolean equalsDatabase(Database database) {
+    public boolean equalsDatabase(Database database)
+    {
         return this.database.equals(database);
     }
 }
