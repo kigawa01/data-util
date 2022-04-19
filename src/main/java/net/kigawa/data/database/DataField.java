@@ -6,6 +6,6 @@ import java.lang.annotation.*;
 @Target(
         ElementType.FIELD
 )
-public @interface DatabaseField
+public @interface DataField
 {
 }
