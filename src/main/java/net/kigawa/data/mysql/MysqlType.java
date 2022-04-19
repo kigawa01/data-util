@@ -2,9 +2,14 @@ package net.kigawa.data.mysql;
 
 import net.kigawa.data.database.DatabaseType;
 
-public class MysqlType extends DatabaseType {
+/**
+ * @deprecated
+ */
+public class MysqlType extends DatabaseType
+{
     @Override
-    public String getName() {
+    public String getName()
+    {
         return "mysql";
     }
 }
