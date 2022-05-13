@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/**
+ * @deprecated
+ */
 public class DatabaseManager implements Module
 {
     public static Logger logger;
