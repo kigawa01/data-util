@@ -1,47 +1,73 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.exception.EmptyKeyException;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
-import java.util.Map;
+import java.util.List;
 
 public abstract class AbstractDatabase implements Module
 {
-    public void createTable(Class<?> cla) throws PrimaryKeyException
+    private int connections = 0;
+
+    public void connect()
+    {
+        if (connections == 0) {
+            createConnection();
+        }
+        connections++;
+    }
+
+    protected abstract void createConnection();
+
+    public void close()
+    {
+        if (connections < 0) return;
+
+        connections--;
+        if (connections == 0) {
+            removeConnection();
+        }
+    }
+
+    protected abstract void removeConnection();
+
+    public void createTable(Class<?> cla)
     {
         createTable(new DataHolderMeta(cla));
     }
 
     protected abstract void createTable(DataHolderMeta dataHolderMeta);
 
-    public void deleteTable(Class<?> cla) throws PrimaryKeyException
+    public void deleteTable(Class<?> cla)
     {
         deleteTable(new DataHolderMeta(cla));
     }
 
     protected abstract void deleteTable(DataHolderMeta dataHolderMeta);
 
-    public <T> void load(T dataHolder) throws PrimaryKeyException
+    public <T> void load(T dataHolder)
     {
         load(new DataHolderMeta(dataHolder.getClass()), dataHolder);
     }
 
     protected abstract void load(DataHolderMeta dataHolderMeta, Object dataHolder);
 
-    public <T> void save(T dataHolder) throws PrimaryKeyException
+    public <T> void save(T dataHolder)
     {
         save(new DataHolderMeta(dataHolder.getClass()), dataHolder);
     }
 
     protected abstract void save(DataHolderMeta dataHolderMeta, Object dataHolder);
 
-    public <T> void loadFrom(T dataHolder, String... keys) throws PrimaryKeyException
+    public <T> void loadFrom(List<T> dataHolder, String... keys)
     {
-        loadFrom(new DataHolderMeta(dataHolder.getClass()), dataHolder, keys);
+        if (dataHolder.isEmpty()) throw new EmptyKeyException("data holder must not empty");
+        loadFrom(new DataHolderMeta(dataHolder.get(0).getClass()), dataHolder, keys);
     }
 
-    protected abstract void loadFrom(DataHolderMeta dataHolderMeta, Object dataHolder, String... keys);
+    protected abstract void loadFrom(DataHolderMeta dataHolderMeta, List<?> dataHolder, String... keys);
 
-    public <T> void delete(T dataHolder) throws PrimaryKeyException
+    public <T> void delete(T dataHolder)
     {
         delete(new DataHolderMeta(dataHolder.getClass()), dataHolder);
     }

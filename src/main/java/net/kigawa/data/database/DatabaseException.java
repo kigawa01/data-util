@@ -1,6 +1,9 @@
 package net.kigawa.data.database;
 
-public class DatabaseException extends Exception
+/**
+ * @deprecated
+ */
+public class DatabaseException extends net.kigawa.data.exception.DatabaseException
 {
     public DatabaseException()
     {

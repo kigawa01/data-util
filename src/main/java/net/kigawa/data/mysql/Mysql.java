@@ -3,8 +3,22 @@ package net.kigawa.data.mysql;
 import net.kigawa.data.database.AbstractDatabase;
 import net.kigawa.data.database.DataHolderMeta;
 
+import java.util.List;
+
 public class Mysql extends AbstractDatabase
 {
+
+    @Override
+    protected void createConnection()
+    {
+
+    }
+
+    @Override
+    protected void removeConnection()
+    {
+
+    }
 
     @Override
     protected void createTable(DataHolderMeta dataHolderMeta)
@@ -31,7 +45,13 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected void loadFrom(DataHolderMeta dataHolderMeta, Object dataHolder, String... keys)
+    protected void loadFrom(DataHolderMeta dataHolderMeta, List<?> dataHolder, String... keys)
+    {
+
+    }
+
+    @Override
+    protected void delete(DataHolderMeta dataHolderMeta, Object dataHolder)
     {
 
     }

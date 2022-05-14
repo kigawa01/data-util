@@ -1,6 +1,9 @@
 package net.kigawa.data.database;
 
-public class PrimaryKeyException extends DatabaseException
+/**
+ * @deprecated
+ */
+public class PrimaryKeyException extends net.kigawa.data.exception.PrimaryKeyException
 {
     public PrimaryKeyException()
     {
