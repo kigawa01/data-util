@@ -1,13 +1,42 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.exception.EmptyKeyException;
+import net.kigawa.data.function.ThrowSupplier;
+import net.kigawa.kutil.kutil.function.ThrowRunnable;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public abstract class AbstractDatabase implements Module
 {
     private int connections = 0;
+
+
+    public void exec(ThrowRunnable runnable)
+    {
+        connect();
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+        close();
+    }
+
+    public <T> T exec(ThrowSupplier<T> supplier)
+    {
+        T result;
+        connect();
+        try {
+            result = supplier.get();
+        } catch (Exception e) {
+            throw new DatabaseException(e);
+        }
+        close();
+        return result;
+    }
 
     public void connect()
     {

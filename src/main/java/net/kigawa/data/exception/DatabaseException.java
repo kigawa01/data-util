@@ -6,4 +6,9 @@ public class DatabaseException extends RuntimeException
     {
         super(message);
     }
+
+    public DatabaseException(Throwable throwable)
+    {
+        super(throwable);
+    }
 }
