@@ -4,6 +4,8 @@ import java.math.BigInteger;
 
 public enum MysqlType
 {
+    BIT("0", "64"),
+
     TINYINT("-128", "127"),
 
     TINYINT_UNSIGNED("0", "255"),
@@ -24,8 +26,6 @@ public enum MysqlType
 
     DECIMAL,
     NUMERIC,
-
-    BIT("1", "64"),
 
     DATE,
     DATETIME,
@@ -52,24 +52,27 @@ public enum MysqlType
     SET,
     ;
 
-    public final String maxSize;
-    public final String minSize;
+    public final BigInteger maxLength;
+    public final BigInteger minLength;
 
     <T> MysqlType()
     {
         this(null, null);
     }
 
-    <T> MysqlType(String minSize, String maxSize)
+    <T> MysqlType(String minLength, String maxLength)
     {
-        this.maxSize = maxSize;
-        this.minSize = minSize;
+        if (maxLength == null) this.maxLength = null;
+        else this.maxLength = new BigInteger(maxLength);
+
+        if (minLength == null) this.minLength = null;
+        else this.minLength = new BigInteger(minLength);
     }
 
 
-    public boolean allowSize(BigInteger size)
+    public boolean allowLength(BigInteger size)
     {
-        if (maxSize == null || minSize == null || size == null) return true;
-        return new BigInteger(minSize).compareTo(size) <= 0 && size.compareTo(new BigInteger(maxSize)) <= 0;
+        if (maxLength == null || minLength == null || size == null) return true;
+        return minLength.compareTo(size) <= 0 && size.compareTo(maxLength) <= 0;
     }
 }
