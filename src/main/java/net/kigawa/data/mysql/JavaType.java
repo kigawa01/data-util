@@ -12,76 +12,75 @@ public enum JavaType
             String.class,
             "0",
             "255",
-            MysqlType.BIT,
-            MysqlType.CHAR,
-            MysqlType.VARCHAR,
-            MysqlType.TINYTEXT,
-            MysqlType.TEXT,
-            MysqlType.MEDIUMTEXT,
-            MysqlType.LONGTEXT
+            MySQLType.BIT,
+            MySQLType.CHAR,
+            MySQLType.VARCHAR,
+            MySQLType.TINYTEXT,
+            MySQLType.TEXT,
+            MySQLType.MEDIUMTEXT,
+            MySQLType.LONGTEXT
     ),
     BIG_DECIMAL(
             BigDecimal.class,
             null,
             null,
-            MysqlType.NUMERIC,
-            MysqlType.DECIMAL
+            MySQLType.DECIMAL
     ),
     BOOLEAN(
             Boolean.class,
             "0",
             "1",
-            MysqlType.BIT
+            MySQLType.BIT
     ),
     BYTE(
             Byte.class,
             Byte.toString(Byte.MIN_VALUE),
             Byte.toString(Byte.MAX_VALUE),
-            MysqlType.BIT,
-            MysqlType.TINYINT
+            MySQLType.BIT,
+            MySQLType.TINYINT
     ),
     SHORT(
             Short.class,
             Short.toString(Short.MIN_VALUE),
             Short.toString(Short.MIN_VALUE),
-            MysqlType.BIT,
-            MysqlType.TINYINT,
-            MysqlType.TINYINT_UNSIGNED,
-            MysqlType.SMALLINT
+            MySQLType.BIT,
+            MySQLType.TINYINT,
+            MySQLType.TINYINT_UNSIGNED,
+            MySQLType.SMALLINT
     ),
     INTEGER(
             Integer.class,
             Integer.toString(Integer.MIN_VALUE),
             Integer.toString(Integer.MAX_VALUE),
-            MysqlType.BIT,
-            MysqlType.TINYINT,
-            MysqlType.TINYINT_UNSIGNED,
-            MysqlType.SMALLINT,
-            MysqlType.SMALLINT_UNSIGNED,
-            MysqlType.MEDIUMINT,
-            MysqlType.MEDIUMINT_UNSIGNED,
-            MysqlType.INT
+            MySQLType.BIT,
+            MySQLType.TINYINT,
+            MySQLType.TINYINT_UNSIGNED,
+            MySQLType.SMALLINT,
+            MySQLType.SMALLINT_UNSIGNED,
+            MySQLType.MEDIUMINT,
+            MySQLType.MEDIUMINT_UNSIGNED,
+            MySQLType.INT
     ),
     LONG(
             Long.class,
             Long.toString(Long.MIN_VALUE),
             Long.toString(Long.MAX_VALUE),
-            MysqlType.BIT,
-            MysqlType.TINYINT,
-            MysqlType.TINYINT_UNSIGNED,
-            MysqlType.SMALLINT,
-            MysqlType.SMALLINT_UNSIGNED,
-            MysqlType.MEDIUMINT,
-            MysqlType.MEDIUMINT_UNSIGNED,
-            MysqlType.INT,
-            MysqlType.INT_UNSIGNED,
-            MysqlType.BIGINT
+            MySQLType.BIT,
+            MySQLType.TINYINT,
+            MySQLType.TINYINT_UNSIGNED,
+            MySQLType.SMALLINT,
+            MySQLType.SMALLINT_UNSIGNED,
+            MySQLType.MEDIUMINT,
+            MySQLType.MEDIUMINT_UNSIGNED,
+            MySQLType.INT,
+            MySQLType.INT_UNSIGNED,
+            MySQLType.BIGINT
     ),
     BIG_INTEGER(
             BigInteger.class,
             "0",
             "18446744073709551615",
-            MysqlType.BIGINT_UNSIGNED
+            MySQLType.BIGINT_UNSIGNED
     ),
     DATE(Date.class,
             null,
@@ -102,9 +101,9 @@ public enum JavaType
     public final Class<?> type;
     public final BigInteger defaultMaxLength;
     public final BigInteger defaultMinLength;
-    public final MysqlType[] mysqlTypes;
+    public final MySQLType[] mysqlTypes;
 
-    JavaType(Class<?> type, String defaultMinLength, String defaultMaxLength, MysqlType... mysqlTypes)
+    JavaType(Class<?> type, String defaultMinLength, String defaultMaxLength, MySQLType... mysqlTypes)
     {
         this.type = type;
         if (defaultMaxLength == null) this.defaultMaxLength = null;

@@ -11,5 +11,8 @@ import java.lang.annotation.Target;
 )
 public @interface DataField
 {
-    int size = 0;
+    String minLength = null;
+    String maxLength = null;
+    Object defaultValue = null;
+    FieldOption[] options = null;
 }
