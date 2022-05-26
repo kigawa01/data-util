@@ -1,4 +1,4 @@
-package net.kigawa.data.database;
+package net.kigawa.data.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,8 +11,4 @@ import java.lang.annotation.Target;
 )
 public @interface DataField
 {
-    String minLength = null;
-    String maxLength = null;
-    Object defaultValue = null;
-    FieldOption[] options = null;
 }

@@ -2,7 +2,6 @@ package net.kigawa.data.database;
 
 import net.kigawa.data.javadata.IntData;
 import net.kigawa.data.keytype.PrimaryKey;
-import net.kigawa.data.mysql.IntType;
 import net.kigawa.kutil.kutil.KutilFile;
 import net.kigawa.kutil.log.log.Formatter;
 import net.kigawa.kutil.log.log.Logger;

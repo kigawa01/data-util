@@ -53,9 +53,11 @@ public class Mysql extends AbstractDatabase
     @Override
     protected void createTable(DataHolderMeta dataHolderMeta)
     {
+        var sb = new StringBuffer();
         exec(() -> {
-            var st = connection.prepareStatement("CREATE TABLE IF NOT EXISTS ? (" + ")");
-            st.setString(1, dataHolderMeta.getName());
+            var st = connection.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS " + dataHolderMeta.getName() + " (" + ")"
+            );
         });
     }
 
@@ -63,8 +65,9 @@ public class Mysql extends AbstractDatabase
     protected void deleteTable(DataHolderMeta dataHolderMeta)
     {
         exec(() -> {
-            var st = connection.prepareStatement("CREATE TABLE IF NOT EXISTS ?");
-            st.setString(1, dataHolderMeta.getName());
+            var st = connection.prepareStatement(
+                    "CREATE TABLE IF NOT EXISTS " + dataHolderMeta.getName()
+            );
         });
     }
 
