@@ -6,12 +6,14 @@ import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.exception.PrimaryKeyException;
 import net.kigawa.data.javatype.JavaDataInterface;
 import net.kigawa.kutil.kutil.Kutil;
+import net.kigawa.kutil.kutil.KutilString;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.LinkedList;
+import java.util.List;
 
 public class DataHolderMeta
 {
@@ -56,21 +58,25 @@ public class DataHolderMeta
         this.fields = Kutil.getArrangement(list, Field[]::new);
     }
 
-    public String columnDefinitions()
+    public String columnDefinitions(TypeResolverInterface typeResolver)
     {
-        try {
-            Object obj = constructor.newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new DatabaseException(e);
-        }
-
         var sb = new StringBuffer();
 
-        for (Field field : fields) {
-            sb.append(" ").append(field.getName());
-            var data = field.get()
+        try {
+            Object obj = constructor.newInstance();
+            List<String> list = new LinkedList<>();
 
+            for (Field field : fields) {
+                var javaData = (JavaDataInterface) field.get(obj);
+                var databaseType = typeResolver.resolveType(javaData);
 
+                list.add(databaseType.typeDefinition());
+            }
+
+            KutilString.insertSymbol(sb, " ", list);
+
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new DatabaseException(e);
         }
 
         return sb.toString();

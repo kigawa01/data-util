@@ -1,12 +1,12 @@
 package net.kigawa.data.mysql;
 
 import com.mysql.cj.MysqlType;
-import net.kigawa.data.database.FieldType;
+import net.kigawa.data.database.DatabaseType;
 
 import java.math.BigInteger;
 import java.sql.SQLType;
 
-public enum MySQLType implements FieldType
+public enum MySQLType implements DatabaseType
 {
     BIT(MysqlType.BIT, "0", "64"),
 
@@ -75,7 +75,7 @@ public enum MySQLType implements FieldType
         else this.minLength = new BigInteger(minLength);
     }
 
-    public SQLType getSqlType()
+    public SQLType getSQLType()
     {
         return sqlType;
     }
