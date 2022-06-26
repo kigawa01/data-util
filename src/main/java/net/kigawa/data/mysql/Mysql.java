@@ -2,6 +2,8 @@ package net.kigawa.data.mysql;
 
 import net.kigawa.data.database.AbstractDatabase;
 import net.kigawa.data.database.DataHolderMeta;
+import net.kigawa.data.database.Field;
+import net.kigawa.data.database.SqlBuilder;
 import net.kigawa.data.exception.DatabaseException;
 
 import java.sql.Connection;
@@ -50,19 +52,19 @@ public class Mysql extends AbstractDatabase
         }
     }
 
+
     @Override
-    protected void createTable(DataHolderMeta dataHolderMeta)
+    protected <T> void createTable(DataHolderMeta<T> dataHolderMeta)
     {
-        var sb = new StringBuffer();
-        exec(() -> {
-            var st = connection.prepareStatement(
-                    "CREATE TABLE IF NOT EXISTS " + dataHolderMeta.getName() + " (" + ")"
-            );
-        });
+        var sql = new SqlBuilder()
+                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(dataHolderMeta.getName())
+                .add("(");
+
+        for ()
     }
 
     @Override
-    protected void deleteTable(DataHolderMeta dataHolderMeta)
+    protected <T> void deleteTable(DataHolderMeta<T> dataHolderMeta)
     {
         exec(() -> {
             var st = connection.prepareStatement(
@@ -72,32 +74,32 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected void load(DataHolderMeta dataHolderMeta, Object dataHolder)
+    protected <T> T load(DataHolderMeta<T> recordClass, Object keyValue)
     {
         exec(() -> {
             var st = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
-            st.setString(1, dataHolderMeta.getName());
-            st.setString(2, dataHolderMeta.primaryKey.getName());
-            st.setObject(3, dataHolderMeta.primaryKey.get(dataHolder));
+            st.setString(1, recordClass.getName());
+            st.setString(2, recordClass.primaryKey.getName());
+            st.setObject(3, recordClass.primaryKey.get(keyValue));
         });
     }
 
     @Override
-    protected void save(DataHolderMeta dataHolderMeta, Object dataHolder)
+    protected <T> void save(DataHolderMeta<T> dataHolderMeta, T dataHolder)
     {
 
     }
 
     @Override
-    protected void loadFrom(DataHolderMeta dataHolderMeta, List<?> dataHolder, String... keys)
+    protected <T> void delete(DataHolderMeta<T> dataHolderMeta, Object keyValue)
     {
 
     }
 
     @Override
-    protected void delete(DataHolderMeta dataHolderMeta, Object dataHolder)
+    protected <T> List<T> loadFrom(DataHolderMeta<T> dataHolderMeta, Field... keys)
     {
-
+        return null;
     }
 
     @Override

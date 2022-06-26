@@ -4,5 +4,5 @@ import net.kigawa.data.javatype.JavaDataInterface;
 
 public interface TypeResolverInterface
 {
-    DatabaseType resolveType(JavaDataInterface javaDataInterface);
+    DatabaseTypeField resolveType(JavaDataInterface javaDataInterface);
 }

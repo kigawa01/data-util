@@ -1,13 +1,11 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.exception.DatabaseException;
-import net.kigawa.data.exception.EmptyKeyException;
 import net.kigawa.data.function.ThrowSupplier;
 import net.kigawa.kutil.kutil.function.ThrowRunnable;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public abstract class AbstractDatabase implements Module
 {
@@ -60,46 +58,45 @@ public abstract class AbstractDatabase implements Module
 
     protected abstract void removeConnection();
 
-    public void createTable(Class<?> cla)
+    public <T> void createTable(Class<T> recordClass)
     {
-        createTable(new DataHolderMeta(cla));
+        createTable(new DataHolderMeta<T>(recordClass));
     }
 
-    protected abstract void createTable(DataHolderMeta dataHolderMeta);
+    protected abstract <T> void createTable(DataHolderMeta<T> dataHolderMeta);
 
-    public void deleteTable(Class<?> cla)
+    public <T> void deleteTable(Class<T> recordClass)
     {
-        deleteTable(new DataHolderMeta(cla));
+        deleteTable(new DataHolderMeta<T>(recordClass));
     }
 
-    protected abstract void deleteTable(DataHolderMeta dataHolderMeta);
+    protected abstract <T> void deleteTable(DataHolderMeta<T> dataHolderMeta);
 
-    public <T> void load(T dataHolder)
+    public <T> T load(Class<T> recordClass, Object keyValue)
     {
-        load(new DataHolderMeta(dataHolder.getClass()), dataHolder);
+        return load(new DataHolderMeta<T>(recordClass), keyValue);
     }
 
-    protected abstract void load(DataHolderMeta dataHolderMeta, Object dataHolder);
+    protected abstract <T> T load(DataHolderMeta<T> recordClass, Object keyValue);
 
-    public <T> void save(T dataHolder)
+    public <T> void save(T record)
     {
-        save(new DataHolderMeta(dataHolder.getClass()), dataHolder);
+        save(new DataHolderMeta(record.getClass()), record);
     }
 
-    protected abstract void save(DataHolderMeta dataHolderMeta, Object dataHolder);
+    protected abstract <T> void save(DataHolderMeta<T> dataHolderMeta, T dataHolder);
 
-    public <T> void loadFrom(List<T> dataHolder, String... keys)
+    public <T> List<T> loadFrom(Class<T> recordClass, Field... keys)
     {
-        if (dataHolder.isEmpty()) throw new EmptyKeyException("data holder must not empty");
-        loadFrom(new DataHolderMeta(dataHolder.get(0).getClass()), dataHolder, keys);
+        return loadFrom(new DataHolderMeta<T>(recordClass), keys);
     }
 
-    protected abstract void loadFrom(DataHolderMeta dataHolderMeta, List<?> dataHolder, String... keys);
+    protected abstract <T> List<T> loadFrom(DataHolderMeta<T> dataHolderMeta, Field... keys);
 
-    public <T> void delete(T dataHolder)
+    public <T> void delete(Class<T> recordClass, Object keyValue)
     {
-        delete(new DataHolderMeta(dataHolder.getClass()), dataHolder);
+        delete(new DataHolderMeta<T>(recordClass), keyValue);
     }
 
-    protected abstract void delete(DataHolderMeta dataHolderMeta, Object dataHolder);
+    protected abstract <T> void delete(DataHolderMeta<T> dataHolderMeta, Object keyValue);
 }

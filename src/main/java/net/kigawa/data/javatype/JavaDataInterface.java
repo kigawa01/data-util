@@ -1,6 +1,6 @@
 package net.kigawa.data.javatype;
 
-import net.kigawa.data.database.DatabaseType;
+import net.kigawa.data.database.DatabaseTypeField;
 
 public interface JavaDataInterface
 {
@@ -8,5 +8,5 @@ public interface JavaDataInterface
 
     void setData(Object data);
 
-    DatabaseType getDatabaseType();
+    DatabaseTypeField getDatabaseType();
 }

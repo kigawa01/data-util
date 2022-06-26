@@ -6,81 +6,84 @@ import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 
+/**
+ * @deprecated
+ */
 public enum JavaType
 {
     STRING(
             String.class,
             "0",
             "255",
-            MySQLType.BIT,
-            MySQLType.CHAR,
-            MySQLType.VARCHAR,
-            MySQLType.TINYTEXT,
-            MySQLType.TEXT,
-            MySQLType.MEDIUMTEXT,
-            MySQLType.LONGTEXT
+            MySQLTypeField.BIT,
+            MySQLTypeField.CHAR,
+            MySQLTypeField.VARCHAR,
+            MySQLTypeField.TINYTEXT,
+            MySQLTypeField.TEXT,
+            MySQLTypeField.MEDIUMTEXT,
+            MySQLTypeField.LONGTEXT
     ),
     BIG_DECIMAL(
             BigDecimal.class,
             null,
             null,
-            MySQLType.DECIMAL
+            MySQLTypeField.DECIMAL
     ),
     BOOLEAN(
             Boolean.class,
             "0",
             "1",
-            MySQLType.BIT
+            MySQLTypeField.BIT
     ),
     BYTE(
             Byte.class,
             Byte.toString(Byte.MIN_VALUE),
             Byte.toString(Byte.MAX_VALUE),
-            MySQLType.BIT,
-            MySQLType.TINYINT
+            MySQLTypeField.BIT,
+            MySQLTypeField.TINYINT
     ),
     SHORT(
             Short.class,
             Short.toString(Short.MIN_VALUE),
             Short.toString(Short.MIN_VALUE),
-            MySQLType.BIT,
-            MySQLType.TINYINT,
-            MySQLType.TINYINT_UNSIGNED,
-            MySQLType.SMALLINT
+            MySQLTypeField.BIT,
+            MySQLTypeField.TINYINT,
+            MySQLTypeField.TINYINT_UNSIGNED,
+            MySQLTypeField.SMALLINT
     ),
     INTEGER(
             Integer.class,
             Integer.toString(Integer.MIN_VALUE),
             Integer.toString(Integer.MAX_VALUE),
-            MySQLType.BIT,
-            MySQLType.TINYINT,
-            MySQLType.TINYINT_UNSIGNED,
-            MySQLType.SMALLINT,
-            MySQLType.SMALLINT_UNSIGNED,
-            MySQLType.MEDIUMINT,
-            MySQLType.MEDIUMINT_UNSIGNED,
-            MySQLType.INT
+            MySQLTypeField.BIT,
+            MySQLTypeField.TINYINT,
+            MySQLTypeField.TINYINT_UNSIGNED,
+            MySQLTypeField.SMALLINT,
+            MySQLTypeField.SMALLINT_UNSIGNED,
+            MySQLTypeField.MEDIUMINT,
+            MySQLTypeField.MEDIUMINT_UNSIGNED,
+            MySQLTypeField.INT
     ),
     LONG(
             Long.class,
             Long.toString(Long.MIN_VALUE),
             Long.toString(Long.MAX_VALUE),
-            MySQLType.BIT,
-            MySQLType.TINYINT,
-            MySQLType.TINYINT_UNSIGNED,
-            MySQLType.SMALLINT,
-            MySQLType.SMALLINT_UNSIGNED,
-            MySQLType.MEDIUMINT,
-            MySQLType.MEDIUMINT_UNSIGNED,
-            MySQLType.INT,
-            MySQLType.INT_UNSIGNED,
-            MySQLType.BIGINT
+            MySQLTypeField.BIT,
+            MySQLTypeField.TINYINT,
+            MySQLTypeField.TINYINT_UNSIGNED,
+            MySQLTypeField.SMALLINT,
+            MySQLTypeField.SMALLINT_UNSIGNED,
+            MySQLTypeField.MEDIUMINT,
+            MySQLTypeField.MEDIUMINT_UNSIGNED,
+            MySQLTypeField.INT,
+            MySQLTypeField.INT_UNSIGNED,
+            MySQLTypeField.BIGINT
     ),
     BIG_INTEGER(
             BigInteger.class,
             "0",
             "18446744073709551615",
-            MySQLType.BIGINT_UNSIGNED
+            MySQLTypeField.BIGINT_UNSIGNED
     ),
     DATE(Date.class,
             null,
@@ -101,9 +104,9 @@ public enum JavaType
     public final Class<?> type;
     public final BigInteger defaultMaxLength;
     public final BigInteger defaultMinLength;
-    public final MySQLType[] mysqlTypes;
+    public final MySQLTypeField[] mysqlTypes;
 
-    JavaType(Class<?> type, String defaultMinLength, String defaultMaxLength, MySQLType... mysqlTypes)
+    JavaType(Class<?> type, String defaultMinLength, String defaultMaxLength, MySQLTypeField... mysqlTypes)
     {
         this.type = type;
         if (defaultMaxLength == null) this.defaultMaxLength = null;
