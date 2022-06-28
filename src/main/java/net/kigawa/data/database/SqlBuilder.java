@@ -1,6 +1,7 @@
 package net.kigawa.data.database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -12,6 +13,14 @@ public class SqlBuilder
     public SqlBuilder append(String str)
     {
         stringBuffer.append(str);
+        return this;
+    }
+
+    public SqlBuilder add(String... strings)
+    {
+        for (String str : strings) {
+            add(str);
+        }
         return this;
     }
 
@@ -28,12 +37,13 @@ public class SqlBuilder
         return this;
     }
 
-    public void getStatement(Connection connection) throws SQLException
+    public PreparedStatement getStatement(Connection connection) throws SQLException
     {
         var statement = connection.prepareStatement(stringBuffer.toString());
         for (int i = 0; i < databaseTypeFields.size(); ) {
             var databaseField = databaseTypeFields.get(i);
             databaseField.setValue(statement, ++i);
         }
+        return statement;
     }
 }

@@ -5,24 +5,23 @@ import net.kigawa.data.annotation.PrimaryKey;
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.exception.PrimaryKeyException;
 import net.kigawa.data.javatype.JavaDataInterface;
-import net.kigawa.kutil.kutil.KutilString;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 
-public class DataHolderMeta<T>
+public class TableMeta<T> implements Iterable<FieldMeta<T>>
 {
     public final Class<T> recordClass;
-    public final Constructor<T> constructor;
-    public final FieldMeta primaryKey;
-    protected final List<FieldMeta> fields = new ArrayList<>();
+    public final FieldMeta<T> primaryKey;
+    protected final Constructor<T> constructor;
+    protected final List<FieldMeta<T>> fields = new ArrayList<>();
 
-    protected DataHolderMeta(Class<T> recordClass) throws DatabaseException
+    protected TableMeta(Class<T> recordClass) throws DatabaseException
     {
         var fields = recordClass.getDeclaredFields();
         Field primaryKey = null;
@@ -41,7 +40,7 @@ public class DataHolderMeta<T>
 
             if (!Modifier.isFinal(field.getModifiers())) throw new DatabaseException("data field must be final");
 
-            this.fields.add(new FieldMeta(field));
+            this.fields.add(new FieldMeta(this, field));
 
             if (field.isAnnotationPresent(PrimaryKey.class)) {
                 if (primaryKey != null) throw new PrimaryKeyException("only one primary key can be set");
@@ -53,11 +52,26 @@ public class DataHolderMeta<T>
 
 
         this.recordClass = recordClass;
-        this.primaryKey = new FieldMeta(primaryKey);
+        this.primaryKey = new FieldMeta(this, primaryKey);
+    }
+
+    public T getEmptyRecord()
+    {
+        try {
+            return constructor.newInstance();
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     public String getName()
     {
         return recordClass.getCanonicalName();
+    }
+
+    @Override
+    public Iterator<FieldMeta<T>> iterator()
+    {
+        return fields.listIterator();
     }
 }

@@ -1,9 +1,9 @@
 package net.kigawa.data.mysql;
 
 import net.kigawa.data.database.AbstractDatabase;
-import net.kigawa.data.database.DataHolderMeta;
 import net.kigawa.data.database.Field;
 import net.kigawa.data.database.SqlBuilder;
+import net.kigawa.data.database.TableMeta;
 import net.kigawa.data.exception.DatabaseException;
 
 import java.sql.Connection;
@@ -17,13 +17,17 @@ public class Mysql extends AbstractDatabase
     private final String url;
     private final String database;
     private final String databaseUrl;
+    private final String user;
+    private final String password;
     private final Logger logger;
     private Connection connection;
 
-    public Mysql(String url, String database, Logger logger)
+    public Mysql(String url, String database, String user, String password, Logger logger)
     {
         this.url = url;
         this.database = database;
+        this.user = user;
+        this.password = password;
         this.logger = logger;
         this.databaseUrl = url + "/" + database;
     }
@@ -34,7 +38,7 @@ public class Mysql extends AbstractDatabase
         try {
             if (connection != null && connection.isClosed()) return;
 
-            connection = DriverManager.getConnection(databaseUrl);
+            connection = DriverManager.getConnection(databaseUrl, user, password);
 
         } catch (SQLException e) {
             throw new DatabaseException(e);
@@ -54,27 +58,46 @@ public class Mysql extends AbstractDatabase
 
 
     @Override
-    protected <T> void createTable(DataHolderMeta<T> dataHolderMeta)
+    protected <T> void createTable(TableMeta<T> tableMeta)
     {
         var sql = new SqlBuilder()
-                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(dataHolderMeta.getName())
+                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(tableMeta.getName())
                 .add("(");
 
-        for ()
+        for (var fieldMeta : tableMeta) {
+            sql.add(fieldMeta.getName());
+            var databaseType = fieldMeta.getEmptyDatabaseTypeField();
+            sql.add(databaseType.getStrType()).add(databaseType.getStrOptions()).add(",");
+        }
+        sql.add(")");
+        try {
+            connect();
+            sql.getStatement(connection).executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        } finally {
+            close();
+        }
     }
 
     @Override
-    protected <T> void deleteTable(DataHolderMeta<T> dataHolderMeta)
+    protected <T> void deleteTable(TableMeta<T> tableMeta)
     {
-        exec(() -> {
-            var st = connection.prepareStatement(
-                    "CREATE TABLE IF NOT EXISTS " + dataHolderMeta.getName()
-            );
-        });
+        var sql = new SqlBuilder()
+                .add("DROP").add("TABLE").add("IF").add("EXISTS").add(tableMeta.getName());
+        try {
+            connect();
+            sql.getStatement(connection).executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        } finally {
+            close();
+        }
+
     }
 
     @Override
-    protected <T> T load(DataHolderMeta<T> recordClass, Object keyValue)
+    protected <T> T load(TableMeta<T> recordClass, Object keyValue)
     {
         exec(() -> {
             var st = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
@@ -85,19 +108,19 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected <T> void save(DataHolderMeta<T> dataHolderMeta, T dataHolder)
+    protected <T> void save(TableMeta<T> tableMeta, T dataHolder)
     {
 
     }
 
     @Override
-    protected <T> void delete(DataHolderMeta<T> dataHolderMeta, Object keyValue)
+    protected <T> void delete(TableMeta<T> tableMeta, Object keyValue)
     {
 
     }
 
     @Override
-    protected <T> List<T> loadFrom(DataHolderMeta<T> dataHolderMeta, Field... keys)
+    protected <T> List<T> loadFrom(TableMeta<T> tableMeta, Field... keys)
     {
         return null;
     }

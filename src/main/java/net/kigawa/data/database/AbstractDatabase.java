@@ -11,31 +11,6 @@ public abstract class AbstractDatabase implements Module
 {
     private int connections = 0;
 
-
-    public void exec(ThrowRunnable runnable)
-    {
-        connect();
-        try {
-            runnable.run();
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
-        close();
-    }
-
-    public <T> T exec(ThrowSupplier<T> supplier)
-    {
-        T result;
-        connect();
-        try {
-            result = supplier.get();
-        } catch (Exception e) {
-            throw new DatabaseException(e);
-        }
-        close();
-        return result;
-    }
-
     public void connect()
     {
         if (connections == 0) {
@@ -60,43 +35,43 @@ public abstract class AbstractDatabase implements Module
 
     public <T> void createTable(Class<T> recordClass)
     {
-        createTable(new DataHolderMeta<T>(recordClass));
+        createTable(new TableMeta<T>(recordClass));
     }
 
-    protected abstract <T> void createTable(DataHolderMeta<T> dataHolderMeta);
+    protected abstract <T> void createTable(TableMeta<T> tableMeta);
 
     public <T> void deleteTable(Class<T> recordClass)
     {
-        deleteTable(new DataHolderMeta<T>(recordClass));
+        deleteTable(new TableMeta<T>(recordClass));
     }
 
-    protected abstract <T> void deleteTable(DataHolderMeta<T> dataHolderMeta);
+    protected abstract <T> void deleteTable(TableMeta<T> tableMeta);
 
     public <T> T load(Class<T> recordClass, Object keyValue)
     {
-        return load(new DataHolderMeta<T>(recordClass), keyValue);
+        return load(new TableMeta<T>(recordClass), keyValue);
     }
 
-    protected abstract <T> T load(DataHolderMeta<T> recordClass, Object keyValue);
+    protected abstract <T> T load(TableMeta<T> recordClass, Object keyValue);
 
     public <T> void save(T record)
     {
-        save(new DataHolderMeta(record.getClass()), record);
+        save(new TableMeta(record.getClass()), record);
     }
 
-    protected abstract <T> void save(DataHolderMeta<T> dataHolderMeta, T dataHolder);
+    protected abstract <T> void save(TableMeta<T> tableMeta, T dataHolder);
 
     public <T> List<T> loadFrom(Class<T> recordClass, Field... keys)
     {
-        return loadFrom(new DataHolderMeta<T>(recordClass), keys);
+        return loadFrom(new TableMeta<T>(recordClass), keys);
     }
 
-    protected abstract <T> List<T> loadFrom(DataHolderMeta<T> dataHolderMeta, Field... keys);
+    protected abstract <T> List<T> loadFrom(TableMeta<T> tableMeta, Field... keys);
 
     public <T> void delete(Class<T> recordClass, Object keyValue)
     {
-        delete(new DataHolderMeta<T>(recordClass), keyValue);
+        delete(new TableMeta<T>(recordClass), keyValue);
     }
 
-    protected abstract <T> void delete(DataHolderMeta<T> dataHolderMeta, Object keyValue);
+    protected abstract <T> void delete(TableMeta<T> tableMeta, Object keyValue);
 }

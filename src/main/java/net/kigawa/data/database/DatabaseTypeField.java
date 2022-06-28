@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 
 public interface DatabaseTypeField
 {
-    String typeDefinition();
+    String getStrType();
+
+    String[] getStrOptions();
 
     void setValue(PreparedStatement statement, int index);
 }
