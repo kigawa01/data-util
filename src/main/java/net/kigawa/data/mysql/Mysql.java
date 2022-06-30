@@ -1,8 +1,8 @@
 package net.kigawa.data.mysql;
 
 import net.kigawa.data.database.AbstractDatabase;
-import net.kigawa.data.database.Field;
-import net.kigawa.data.database.SqlBuilder;
+import net.kigawa.data.util.TogetherTwo;
+import net.kigawa.data.sql.SqlBuilder;
 import net.kigawa.data.database.TableMeta;
 import net.kigawa.data.exception.DatabaseException;
 
@@ -66,7 +66,7 @@ public class Mysql extends AbstractDatabase
 
         for (var fieldMeta : tableMeta) {
             sql.add(fieldMeta.getName());
-            var databaseType = fieldMeta.getEmptyDatabaseTypeField();
+            var databaseType = fieldMeta.getEmptyField();
             sql.add(databaseType.getStrType()).add(databaseType.getStrOptions()).add(",");
         }
         sql.add(")");
@@ -97,14 +97,11 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected <T> T load(TableMeta<T> recordClass, Object keyValue)
+    protected <T> T load(TableMeta<T> tableMeta, Object keyValue)
     {
-        exec(() -> {
-            var st = connection.prepareStatement("SELECT * FROM ? WHERE ?=?");
-            st.setString(1, recordClass.getName());
-            st.setString(2, recordClass.primaryKey.getName());
-            st.setObject(3, recordClass.primaryKey.get(keyValue));
-        });
+        var sql = new SqlBuilder()
+                .add("SELECT").add("*").add("FROM").add(tableMeta.getName())
+                .add("WHERE").add(tableMeta)
     }
 
     @Override
@@ -120,7 +117,7 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected <T> List<T> loadFrom(TableMeta<T> tableMeta, Field... keys)
+    protected <T> List<T> loadFrom(TableMeta<T> tableMeta, TogetherTwo... keys)
     {
         return null;
     }

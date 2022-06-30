@@ -1,15 +1,18 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.exception.DatabaseException;
-import net.kigawa.data.function.ThrowSupplier;
-import net.kigawa.kutil.kutil.function.ThrowRunnable;
+import net.kigawa.data.javatype.JavaField;
+import net.kigawa.data.util.TogetherTwo;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class AbstractDatabase implements Module
 {
     private int connections = 0;
+    private Set<FieldResolverInterface> fieldResolvers = new HashSet<>();
 
     public void connect()
     {
@@ -29,6 +32,35 @@ public abstract class AbstractDatabase implements Module
         if (connections == 0) {
             removeConnection();
         }
+    }
+
+    public void addResolver(FieldResolverInterface resolver)
+    {
+        fieldResolvers.add(resolver);
+    }
+
+    public void removeResolver(FieldResolverInterface resolver)
+    {
+        fieldResolvers.remove(resolver);
+    }
+
+    public DatabaseField resolveField(JavaField javaField)
+    {
+        for (var resolver : fieldResolvers) {
+            if (!resolver.canResolve(javaField)) continue;
+            return resolver.resolveType(javaField);
+        }
+
+        throw new DatabaseException("can not resolve field: " + javaField.toString());
+    }
+
+    public JavaField resolveField(DatabaseField databaseField)
+    {
+        for (var resolver : fieldResolvers) {
+            if (!resolver.canResolve(databaseField)) continue;
+            return resolver.resolveType(databaseField);
+        }
+        throw new DatabaseException("can not resolve field: " + databaseField.toString());
     }
 
     protected abstract void removeConnection();
@@ -61,12 +93,12 @@ public abstract class AbstractDatabase implements Module
 
     protected abstract <T> void save(TableMeta<T> tableMeta, T dataHolder);
 
-    public <T> List<T> loadFrom(Class<T> recordClass, Field... keys)
+    public <T> List<T> loadFrom(Class<T> recordClass, TogetherTwo... keys)
     {
         return loadFrom(new TableMeta<T>(recordClass), keys);
     }
 
-    protected abstract <T> List<T> loadFrom(TableMeta<T> tableMeta, Field... keys);
+    protected abstract <T> List<T> loadFrom(TableMeta<T> tableMeta, TogetherTwo... keys);
 
     public <T> void delete(Class<T> recordClass, Object keyValue)
     {

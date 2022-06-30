@@ -3,7 +3,7 @@ package net.kigawa.data.database;
 
 import java.sql.PreparedStatement;
 
-public interface DatabaseTypeField
+public interface DatabaseField
 {
     String getStrType();
 

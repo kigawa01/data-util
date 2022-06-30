@@ -4,7 +4,7 @@ import net.kigawa.data.annotation.DataField;
 import net.kigawa.data.annotation.PrimaryKey;
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.exception.PrimaryKeyException;
-import net.kigawa.data.javatype.JavaDataInterface;
+import net.kigawa.data.javatype.JavaField;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -35,7 +35,7 @@ public class TableMeta<T> implements Iterable<FieldMeta<T>>
         for (Field field : fields) {
             if (field.getAnnotation(DataField.class) == null) continue;
 
-            if (!JavaDataInterface.class.isAssignableFrom(field.getDeclaringClass()))
+            if (!JavaField.class.isAssignableFrom(field.getDeclaringClass()))
                 throw new DatabaseException("data field must implement JavaTypeInterface");
 
             if (!Modifier.isFinal(field.getModifiers())) throw new DatabaseException("data field must be final");

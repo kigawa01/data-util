@@ -13,7 +13,7 @@ public class FieldMeta<T>
     {
         this.tableMeta = tableMeta;
         this.field = field;
-        getEmptyDatabaseTypeField();
+        getEmptyField();
     }
 
     public String getName()
@@ -21,13 +21,15 @@ public class FieldMeta<T>
         return field.getName();
     }
 
-    public DatabaseTypeField getEmptyDatabaseTypeField()
+    public DatabaseField getEmptyField()
     {
         try {
             var record = tableMeta.getEmptyRecord();
-            return (DatabaseTypeField) field.get(record);
+            return (DatabaseField) field.get(record);
         } catch (IllegalAccessException e) {
             throw new DatabaseException(e);
         }
     }
+
+
 }

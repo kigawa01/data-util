@@ -1,6 +1,7 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.javadata.JavaData;
+import net.kigawa.data.util.TogetherTwo;
 import net.kigawa.kutil.kutil.Kutil;
 import net.kigawa.kutil.log.log.Logger;
 
@@ -19,7 +20,7 @@ public class Record
     private final JavaData key;
     private final Logger logger;
     private final Table table;
-    private final Map<Column, Field> fieldMap = new HashMap<>();
+    private final Map<Column, TogetherTwo> fieldMap = new HashMap<>();
 
     protected Record(Logger logger, Table table, Columns columns, JavaData key)
     {
@@ -28,7 +29,7 @@ public class Record
         this.logger = logger;
         this.table = table;
         for (Column column : columns) {
-            fieldMap.put(column, new Field(this, column));
+            fieldMap.put(column, new TogetherTwo(this, column));
         }
     }
 
@@ -85,7 +86,7 @@ public class Record
         return table.select(columns, this.columns.getKeyName() + "=?", key);
     }
 
-    public Field getField(String name)
+    public TogetherTwo getField(String name)
     {
         if (!columns.contain(name)) return null;
         return fieldMap.get(columns.get(name));

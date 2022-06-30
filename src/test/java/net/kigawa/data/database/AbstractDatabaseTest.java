@@ -2,6 +2,7 @@ package net.kigawa.data.database;
 
 import net.kigawa.data.javadata.IntData;
 import net.kigawa.data.keytype.PrimaryKey;
+import net.kigawa.data.util.TogetherTwo;
 import net.kigawa.kutil.kutil.KutilFile;
 import net.kigawa.kutil.log.log.Formatter;
 import net.kigawa.kutil.log.log.Logger;
@@ -35,7 +36,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
     protected Database database;
     protected Table table;
     protected Record record;
-    protected Field field;
+    protected TogetherTwo togetherTwo;
 
     public AbstractDatabaseTest() {
         logger.enable();
@@ -65,7 +66,7 @@ public abstract class AbstractDatabaseTest extends Assertions {
         database = manager.getDatabase(url, USER, password, DB_NAME, false);
         table = database.getTable(TABLE_NAME, columns, false);
         record = table.getRecord(new IntData(0), false);
-        field = record.getField("name");
+        togetherTwo = record.getField("name");
     }
 
     @BeforeEach

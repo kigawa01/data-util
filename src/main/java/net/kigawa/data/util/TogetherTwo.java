@@ -1,11 +1,11 @@
-package net.kigawa.data.database;
+package net.kigawa.data.util;
 
-public class Field
+public class TogetherTwo
 {
     private final String key;
     private final Object value;
 
-    Field(String key, Object value)
+    TogetherTwo(String key, Object value)
     {
         this.key = key;
         this.value = value;
