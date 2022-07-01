@@ -67,43 +67,43 @@ public abstract class AbstractDatabase implements Module
 
     public <T> void createTable(Class<T> recordClass)
     {
-        createTable(new TableMeta<T>(recordClass));
+        createTable(new TableInfo<T>(recordClass));
     }
 
-    protected abstract <T> void createTable(TableMeta<T> tableMeta);
+    protected abstract <T> void createTable(TableInfo<T> tableMeta);
 
     public <T> void deleteTable(Class<T> recordClass)
     {
-        deleteTable(new TableMeta<T>(recordClass));
+        deleteTable(new TableInfo<T>(recordClass));
     }
 
-    protected abstract <T> void deleteTable(TableMeta<T> tableMeta);
+    protected abstract <T> void deleteTable(TableInfo<T> tableMeta);
 
     public <T> T load(Class<T> recordClass, Object keyValue)
     {
-        return load(new TableMeta<T>(recordClass), keyValue);
+        return load(new TableInfo<T>(recordClass), keyValue);
     }
 
-    protected abstract <T> T load(TableMeta<T> recordClass, Object keyValue);
+    protected abstract <T> T load(TableInfo<T> recordClass, Object keyValue);
 
     public <T> void save(T record)
     {
-        save(new TableMeta(record.getClass()), record);
+        save(new TableInfo(record.getClass()), record);
     }
 
-    protected abstract <T> void save(TableMeta<T> tableMeta, T dataHolder);
+    protected abstract <T> void save(TableInfo<T> tableMeta, T dataHolder);
 
     public <T> List<T> loadFrom(Class<T> recordClass, TogetherTwo... keys)
     {
-        return loadFrom(new TableMeta<T>(recordClass), keys);
+        return loadFrom(new TableInfo<T>(recordClass), keys);
     }
 
-    protected abstract <T> List<T> loadFrom(TableMeta<T> tableMeta, TogetherTwo... keys);
+    protected abstract <T> List<T> loadFrom(TableInfo<T> tableMeta, TogetherTwo... keys);
 
     public <T> void delete(Class<T> recordClass, Object keyValue)
     {
-        delete(new TableMeta<T>(recordClass), keyValue);
+        delete(new TableInfo<T>(recordClass), keyValue);
     }
 
-    protected abstract <T> void delete(TableMeta<T> tableMeta, Object keyValue);
+    protected abstract <T> void delete(TableInfo<T> tableMeta, Object keyValue);
 }

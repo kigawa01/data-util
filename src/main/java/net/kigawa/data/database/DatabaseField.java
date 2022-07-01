@@ -3,11 +3,23 @@ package net.kigawa.data.database;
 
 import java.sql.PreparedStatement;
 
-public interface DatabaseField
+public abstract class DatabaseField
 {
-    String getStrType();
+    private final String name;
 
-    String[] getStrOptions();
+    public DatabaseField(String name)
+    {
+        this.name = name;
+    }
 
-    void setValue(PreparedStatement statement, int index);
+    public String getName()
+    {
+        return name;
+    }
+
+    public abstract String getTypeName();
+
+    public abstract String[] getStrOptions();
+
+    public abstract void setValueToStatement(PreparedStatement statement, int index);
 }

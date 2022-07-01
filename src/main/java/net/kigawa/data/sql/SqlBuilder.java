@@ -44,7 +44,7 @@ public class SqlBuilder
         var statement = connection.prepareStatement(stringBuffer.toString());
         for (int i = 0; i < databaseFields.size(); ) {
             var databaseField = databaseFields.get(i);
-            databaseField.setValue(statement, ++i);
+            databaseField.setValueToStatement(statement, ++i);
         }
         return statement;
     }

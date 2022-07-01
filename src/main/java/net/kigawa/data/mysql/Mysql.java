@@ -1,10 +1,10 @@
 package net.kigawa.data.mysql;
 
 import net.kigawa.data.database.AbstractDatabase;
-import net.kigawa.data.util.TogetherTwo;
-import net.kigawa.data.sql.SqlBuilder;
-import net.kigawa.data.database.TableMeta;
+import net.kigawa.data.database.TableInfo;
 import net.kigawa.data.exception.DatabaseException;
+import net.kigawa.data.sql.SqlBuilder;
+import net.kigawa.data.util.TogetherTwo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -58,16 +58,17 @@ public class Mysql extends AbstractDatabase
 
 
     @Override
-    protected <T> void createTable(TableMeta<T> tableMeta)
+    protected <T> void createTable(TableInfo<T> tableMeta)
     {
         var sql = new SqlBuilder()
                 .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(tableMeta.getName())
                 .add("(");
 
-        for (var fieldMeta : tableMeta) {
-            sql.add(fieldMeta.getName());
-            var databaseType = fieldMeta.getEmptyField();
-            sql.add(databaseType.getStrType()).add(databaseType.getStrOptions()).add(",");
+        for (var databaseField : tableMeta) {
+            sql.add(databaseField.getName())
+                    .add(databaseField.getTypeName())
+                    .add("DEFAULT").add(databaseField)
+                    .add(databaseField.getStrOptions()).add(",");
         }
         sql.add(")");
         try {
@@ -81,10 +82,10 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected <T> void deleteTable(TableMeta<T> tableMeta)
+    protected <T> void deleteTable(TableInfo<T> tableInfo)
     {
         var sql = new SqlBuilder()
-                .add("DROP").add("TABLE").add("IF").add("EXISTS").add(tableMeta.getName());
+                .add("DROP").add("TABLE").add("IF").add("EXISTS").add(tableInfo.getName());
         try {
             connect();
             sql.getStatement(connection).executeUpdate();
@@ -97,27 +98,27 @@ public class Mysql extends AbstractDatabase
     }
 
     @Override
-    protected <T> T load(TableMeta<T> tableMeta, Object keyValue)
+    protected <T> T load(TableInfo<T> tableInfo, Object keyValue)
     {
         var sql = new SqlBuilder()
-                .add("SELECT").add("*").add("FROM").add(tableMeta.getName())
-                .add("WHERE").add(tableMeta)
+                .add("SELECT").add("*").add("FROM").add(tableInfo.getName())
+                .add("WHERE").add(tableInfo.primaryKey.getName()).add("=").add(tableInfo.primaryKey.setValueToStatement();)
     }
 
     @Override
-    protected <T> void save(TableMeta<T> tableMeta, T dataHolder)
+    protected <T> void save(TableInfo<T> tableInfo, T dataHolder)
     {
 
     }
 
     @Override
-    protected <T> void delete(TableMeta<T> tableMeta, Object keyValue)
+    protected <T> void delete(TableInfo<T> tableInfo, Object keyValue)
     {
 
     }
 
     @Override
-    protected <T> List<T> loadFrom(TableMeta<T> tableMeta, TogetherTwo... keys)
+    protected <T> List<T> loadFrom(TableInfo<T> tableInfo, TogetherTwo... keys)
     {
         return null;
     }
