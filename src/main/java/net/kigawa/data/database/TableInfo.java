@@ -16,22 +16,25 @@ import java.util.List;
 
 public class TableInfo<T> implements Iterable<DatabaseField>
 {
+    public final String name;
     public final Class<T> recordClass;
     public final DatabaseField primaryKey;
+    public final T record;
+    public final AbstractDatabase database;
     protected final Constructor<T> constructor;
     protected final List<DatabaseField> fields = new ArrayList<>();
-    private final AbstractDatabase database;
 
     protected TableInfo(Class<T> recordClass, AbstractDatabase database) throws DatabaseException
     {
         var fields = recordClass.getDeclaredFields();
-        var record = getEmptyRecord();
         this.database = database;
         DatabaseField primaryKey = null;
 
         try {
             constructor = recordClass.getConstructor();
-        } catch (NoSuchMethodException e) {
+            record = constructor.newInstance();
+        } catch (InstantiationException | InvocationTargetException | IllegalAccessException |
+                 NoSuchMethodException e) {
             throw new DatabaseException("need non arg constructor");
         }
 
@@ -64,20 +67,7 @@ public class TableInfo<T> implements Iterable<DatabaseField>
 
         this.primaryKey = primaryKey;
         this.recordClass = recordClass;
-    }
-
-    public T getEmptyRecord()
-    {
-        try {
-            return constructor.newInstance();
-        } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
-            throw new DatabaseException(e);
-        }
-    }
-
-    public String getName()
-    {
-        return recordClass.getCanonicalName();
+        this.name = recordClass.getCanonicalName();
     }
 
     @Override

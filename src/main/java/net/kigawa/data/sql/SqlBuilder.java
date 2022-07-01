@@ -18,6 +18,13 @@ public class SqlBuilder
         return this;
     }
 
+    public SqlBuilder add(SqlBuilder sqlBuilder)
+    {
+        stringBuffer.append(sqlBuilder.stringBuffer);
+        databaseFields.addAll(sqlBuilder.databaseFields);
+        return this;
+    }
+
     public SqlBuilder add(String... strings)
     {
         for (String str : strings) {
@@ -44,7 +51,7 @@ public class SqlBuilder
         var statement = connection.prepareStatement(stringBuffer.toString());
         for (int i = 0; i < databaseFields.size(); ) {
             var databaseField = databaseFields.get(i);
-            databaseField.setValueToStatement(statement, ++i);
+            databaseField.writeStatement(statement, ++i);
         }
         return statement;
     }

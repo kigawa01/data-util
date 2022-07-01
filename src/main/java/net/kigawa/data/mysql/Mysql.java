@@ -1,6 +1,7 @@
 package net.kigawa.data.mysql;
 
 import net.kigawa.data.database.AbstractDatabase;
+import net.kigawa.data.database.DatabaseField;
 import net.kigawa.data.database.TableInfo;
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.sql.SqlBuilder;
@@ -61,7 +62,7 @@ public class Mysql extends AbstractDatabase
     protected <T> void createTable(TableInfo<T> tableMeta)
     {
         var sql = new SqlBuilder()
-                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(tableMeta.getName())
+                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(tableMeta.name)
                 .add("(");
 
         for (var databaseField : tableMeta) {
@@ -85,7 +86,7 @@ public class Mysql extends AbstractDatabase
     protected <T> void deleteTable(TableInfo<T> tableInfo)
     {
         var sql = new SqlBuilder()
-                .add("DROP").add("TABLE").add("IF").add("EXISTS").add(tableInfo.getName());
+                .add("DROP").add("TABLE").add("IF").add("EXISTS").add(tableInfo.name);
         try {
             connect();
             sql.getStatement(connection).executeUpdate();
@@ -101,8 +102,35 @@ public class Mysql extends AbstractDatabase
     protected <T> T load(TableInfo<T> tableInfo, Object keyValue)
     {
         var sql = new SqlBuilder()
-                .add("SELECT").add("*").add("FROM").add(tableInfo.getName())
-                .add("WHERE").add(tableInfo.primaryKey.getName()).add("=").add(tableInfo.primaryKey.setValueToStatement();)
+                .add("SELECT").add("*").add("FROM").add(tableInfo.name);
+        tableInfo.primaryKey.setValue(keyValue);
+        sql.add("WHERE").add(tableInfo.primaryKey.getName()).add("=").add(tableInfo.primaryKey);
+
+
+        try {
+            connect();
+            var result = sql.getStatement(connection).executeQuery();
+            if (!result.next()) return null;
+
+            for (DatabaseField databaseField : tableInfo) {
+                databaseField.readResult(result);
+            }
+
+            return tableInfo.record;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        } finally {
+            close();
+        }
+    }
+
+    @Override
+    protected <T> List<T> loadWhere(TableInfo<T> tableInfo, SqlBuilder where)
+    {
+        var sql = new SqlBuilder()
+                .add("SELECT").add("*").add("FROM").add(tableInfo.name)
+                .add("WHERE").add(where);
+        return null;
     }
 
     @Override
@@ -115,12 +143,6 @@ public class Mysql extends AbstractDatabase
     protected <T> void delete(TableInfo<T> tableInfo, Object keyValue)
     {
 
-    }
-
-    @Override
-    protected <T> List<T> loadFrom(TableInfo<T> tableInfo, TogetherTwo... keys)
-    {
-        return null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.kigawa.data.database;
 
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.javatype.JavaField;
+import net.kigawa.data.sql.SqlBuilder;
 import net.kigawa.data.util.TogetherTwo;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
@@ -67,42 +68,42 @@ public abstract class AbstractDatabase implements Module
 
     public <T> void createTable(Class<T> recordClass)
     {
-        createTable(new TableInfo<T>(recordClass));
+        createTable(new TableInfo<T>(recordClass,this));
     }
 
     protected abstract <T> void createTable(TableInfo<T> tableMeta);
 
     public <T> void deleteTable(Class<T> recordClass)
     {
-        deleteTable(new TableInfo<T>(recordClass));
+        deleteTable(new TableInfo<T>(recordClass,this));
     }
 
     protected abstract <T> void deleteTable(TableInfo<T> tableMeta);
 
     public <T> T load(Class<T> recordClass, Object keyValue)
     {
-        return load(new TableInfo<T>(recordClass), keyValue);
+        return load(new TableInfo<T>(recordClass,this), keyValue);
     }
 
     protected abstract <T> T load(TableInfo<T> recordClass, Object keyValue);
 
     public <T> void save(T record)
     {
-        save(new TableInfo(record.getClass()), record);
+        save(new TableInfo(record.getClass(),this), record);
     }
 
     protected abstract <T> void save(TableInfo<T> tableMeta, T dataHolder);
 
-    public <T> List<T> loadFrom(Class<T> recordClass, TogetherTwo... keys)
+    public <T> List<T> loadWhere(Class<T> recordClass, SqlBuilder where)
     {
-        return loadFrom(new TableInfo<T>(recordClass), keys);
+        return loadWhere(new TableInfo<T>(recordClass,this), where);
     }
 
-    protected abstract <T> List<T> loadFrom(TableInfo<T> tableMeta, TogetherTwo... keys);
+    protected abstract <T> List<T> loadWhere(TableInfo<T> tableMeta, SqlBuilder where);
 
     public <T> void delete(Class<T> recordClass, Object keyValue)
     {
-        delete(new TableInfo<T>(recordClass), keyValue);
+        delete(new TableInfo<T>(recordClass,this), keyValue);
     }
 
     protected abstract <T> void delete(TableInfo<T> tableMeta, Object keyValue);
