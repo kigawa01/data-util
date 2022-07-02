@@ -1,9 +1,9 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.exception.DatabaseException;
-import net.kigawa.data.javatype.JavaField;
+import net.kigawa.data.javaConstraint.JavaConstraint;
+import net.kigawa.data.javaField.JavaField;
 import net.kigawa.data.sql.SqlBuilder;
-import net.kigawa.data.util.TogetherTwo;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
 import java.util.HashSet;
@@ -13,7 +13,7 @@ import java.util.Set;
 public abstract class AbstractDatabase implements Module
 {
     private int connections = 0;
-    private Set<FieldResolverInterface> fieldResolvers = new HashSet<>();
+    private Set<DatabaseResolverInterface> resolver = new HashSet<>();
 
     public void connect()
     {
@@ -35,33 +35,33 @@ public abstract class AbstractDatabase implements Module
         }
     }
 
-    public void addResolver(FieldResolverInterface resolver)
+    public void addResolver(DatabaseResolverInterface resolver)
     {
-        fieldResolvers.add(resolver);
+        this.resolver.add(resolver);
     }
 
-    public void removeResolver(FieldResolverInterface resolver)
+    public void removeResolver(DatabaseResolverInterface resolver)
     {
-        fieldResolvers.remove(resolver);
+        this.resolver.remove(resolver);
     }
 
     public DatabaseField resolveField(JavaField javaField)
     {
-        for (var resolver : fieldResolvers) {
-            if (!resolver.canResolve(javaField)) continue;
-            return resolver.resolveType(javaField);
+        for (var resolver : resolver) {
+            if (!resolver.canResolveField(javaField)) continue;
+            return resolver.resolveField(javaField);
         }
 
         throw new DatabaseException("can not resolve field: " + javaField.toString());
     }
 
-    public JavaField resolveField(DatabaseField databaseField)
-    {
-        for (var resolver : fieldResolvers) {
-            if (!resolver.canResolve(databaseField)) continue;
-            return resolver.resolveType(databaseField);
+    public DatabaseConstraint resolveConstraint(JavaConstraint javaConstraint){
+        for (var resolver: resolver){
+            if (!resolver.canResolveConstraint(javaConstraint))continue;
+            return resolver.resolveConstraint(javaConstraint);
         }
-        throw new DatabaseException("can not resolve field: " + databaseField.toString());
+
+        throw new DatabaseException("can not resolve constraint: " + javaConstraint.toString());
     }
 
     protected abstract void removeConnection();

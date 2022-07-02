@@ -1,11 +1,14 @@
 package net.kigawa.data.mysql;
 
+import net.kigawa.data.annotation.NotNull;
 import net.kigawa.data.annotation.PrimaryKey;
+import net.kigawa.data.annotation.UniqueKey;
 import net.kigawa.data.database.DatabaseField;
-import net.kigawa.data.javatype.JavaField;
+import net.kigawa.data.javaField.JavaField;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
+import java.util.List;
 
 public abstract class MysqlField extends DatabaseField
 {
@@ -14,13 +17,19 @@ public abstract class MysqlField extends DatabaseField
         super(name, javaField, field);
     }
 
+    protected abstract void configureStrOptions(List<String> options);
+
     @Override
     public String[] getStrOptions()
     {
-        var list = new LinkedList<String>();
+        var options = new LinkedList<String>();
 
-        if (hasAnnotation(PrimaryKey.class)) list.add("PRIMARY KEY");
+        if (hasAnnotation(PrimaryKey.class)) options.add("PRIMARY KEY");
+        if (hasAnnotation(UniqueKey.class)) options.add("UNIQUE");
+        if (hasAnnotation(NotNull.class)) options.add("NOT NULL");
 
-        return list.toArray(String[]::new);
+        configureStrOptions(options);
+
+        return options.toArray(String[]::new);
     }
 }

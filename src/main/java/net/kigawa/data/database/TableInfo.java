@@ -1,13 +1,14 @@
 package net.kigawa.data.database;
 
+import net.kigawa.data.annotation.Constraint;
 import net.kigawa.data.annotation.DataField;
 import net.kigawa.data.annotation.PrimaryKey;
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.exception.PrimaryKeyException;
-import net.kigawa.data.javatype.JavaField;
+import net.kigawa.data.javaConstraint.JavaConstraint;
+import net.kigawa.data.javaField.JavaField;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ public class TableInfo<T> implements Iterable<DatabaseField>
     public final DatabaseField primaryKey;
     public final T record;
     public final AbstractDatabase database;
-    protected final Constructor<T> constructor;
-    protected final List<DatabaseField> fields = new ArrayList<>();
+    private final List<DatabaseField> databaseFields = new ArrayList<>();
+    private final List<DatabaseConstraint> constraints = new ArrayList<>();
 
     protected TableInfo(Class<T> recordClass, AbstractDatabase database) throws DatabaseException
     {
@@ -31,34 +32,53 @@ public class TableInfo<T> implements Iterable<DatabaseField>
         DatabaseField primaryKey = null;
 
         try {
-            constructor = recordClass.getConstructor();
+            Constructor<T> constructor = recordClass.getConstructor();
             record = constructor.newInstance();
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException |
                  NoSuchMethodException e) {
             throw new DatabaseException("need non arg constructor");
         }
 
-        for (Field field : fields) {
-            if (field.getAnnotation(DataField.class) == null) continue;
-
-            Object javaField;
-            try {
-                javaField = field.get(record);
-            } catch (IllegalAccessException e) {
-                throw new DatabaseException(e);
-            }
-
-            if (!(javaField instanceof JavaField))
-                throw new DatabaseException("data field must implement JavaTypeInterface");
+        for (java.lang.reflect.Field field : fields) {
+            if (!field.isAnnotationPresent(Constraint.class) && !field.isAnnotationPresent(DataField.class))
+                continue;
 
             if (!Modifier.isFinal(field.getModifiers())) throw new DatabaseException("data field must be final");
 
-            var databaseField = database.resolveField((JavaField) javaField);
-            this.fields.add(databaseField);
 
-            if (field.isAnnotationPresent(PrimaryKey.class)) {
-                if (primaryKey != null) throw new PrimaryKeyException("only one primary key can be set");
-                primaryKey = databaseField;
+            if (field.isAnnotationPresent(Constraint.class)) {
+                Object javaConstraint;
+                try {
+                    javaConstraint = field.get(record);
+                } catch (IllegalAccessException e) {
+                    throw new DatabaseException(e);
+                }
+
+                if (!(javaConstraint instanceof JavaConstraint))
+                    throw new DatabaseException("constraint must extend JavaConstraint");
+
+                var databaseConstraint = database.resolveConstraint((JavaConstraint) javaConstraint);
+                constraints.add(databaseConstraint);
+
+            }
+            if (field.isAnnotationPresent(DataField.class)) {
+                Object javaField;
+                try {
+                    javaField = field.get(record);
+                } catch (IllegalAccessException e) {
+                    throw new DatabaseException(e);
+                }
+
+                if (!(javaField instanceof JavaField))
+                    throw new DatabaseException("field must extend JavaTypeInterface");
+
+                var databaseField = database.resolveField((JavaField) javaField);
+                this.databaseFields.add(databaseField);
+
+                if (field.isAnnotationPresent(PrimaryKey.class)) {
+                    if (primaryKey != null) throw new PrimaryKeyException("only one primary key can be set");
+                    primaryKey = databaseField;
+                }
             }
         }
 
@@ -70,6 +90,11 @@ public class TableInfo<T> implements Iterable<DatabaseField>
         this.name = recordClass.getCanonicalName();
     }
 
+    public List<DatabaseConstraint> getConstraints()
+    {
+        return new ArrayList<>(constraints);
+    }
+
     public TableInfo<T> getNewTableInfo()
     {
         return new TableInfo<>(recordClass, database);
@@ -78,6 +103,6 @@ public class TableInfo<T> implements Iterable<DatabaseField>
     @Override
     public Iterator<DatabaseField> iterator()
     {
-        return fields.listIterator();
+        return databaseFields.listIterator();
     }
 }

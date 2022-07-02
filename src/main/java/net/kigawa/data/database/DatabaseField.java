@@ -1,24 +1,21 @@
 package net.kigawa.data.database;
 
 
-import net.kigawa.data.javatype.JavaField;
+import net.kigawa.data.javaField.JavaField;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-public abstract class DatabaseField
+public abstract class DatabaseField extends ReflectionContainer
 {
-    public final String name;
     public final JavaField javaField;
-    public final Field field;
 
-    public DatabaseField(String name, JavaField javaField, Field field)
+    public DatabaseField( JavaField javaField, Field field)
     {
-        this.name = name;
+        super(field);
         this.javaField = javaField;
-        this.field = field;
     }
 
     public boolean hasAnnotation(Class<? extends Annotation> annotation)

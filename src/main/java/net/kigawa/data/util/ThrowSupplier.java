@@ -1,4 +1,4 @@
-package net.kigawa.data.function;
+package net.kigawa.data.util;
 
 public interface ThrowSupplier<T>
 {
