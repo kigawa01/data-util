@@ -31,6 +31,8 @@ public class Mysql extends AbstractDatabase
         this.password = password;
         this.logger = logger;
         this.databaseUrl = url + "/" + database;
+
+
     }
 
     @Override
@@ -66,7 +68,7 @@ public class Mysql extends AbstractDatabase
                 .add("(");
 
         for (var databaseField : tableMeta) {
-            sql.add(databaseField.getName())
+            sql.add(databaseField.name)
                     .add(databaseField.getTypeName())
                     .add("DEFAULT").addField(databaseField)
                     .add(databaseField.getStrOptions()).add(",");
@@ -105,7 +107,7 @@ public class Mysql extends AbstractDatabase
         var sql = new SqlBuilder()
                 .add("SELECT").add("*").add("FROM").add(tableInfo.name);
         tableInfo.primaryKey.setValue(keyValue);
-        sql.add("WHERE").add(tableInfo.primaryKey.getName()).add("=").addField(tableInfo.primaryKey);
+        sql.add("WHERE").add(tableInfo.primaryKey.name).add("=").addField(tableInfo.primaryKey);
 
 
         try {
@@ -174,7 +176,7 @@ public class Mysql extends AbstractDatabase
             sql.getStatement(connection).executeUpdate();
         } catch (SQLException e) {
             throw new DatabaseException(e);
-        }finally {
+        } finally {
             close();
         }
     }
@@ -182,7 +184,18 @@ public class Mysql extends AbstractDatabase
     @Override
     protected <T> void delete(TableInfo<T> tableInfo, Object keyValue)
     {
-
+        tableInfo.primaryKey.setValue(keyValue);
+        var sql = new SqlBuilder()
+                .add("DELETE").add("FROM").add(tableInfo.name)
+                .add("WHERE").add(tableInfo.primaryKey.name).add("=").addField(tableInfo.primaryKey);
+        try {
+            connect();
+            sql.getStatement(connection).executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        } finally {
+            close();
+        }
     }
 
     @Override
