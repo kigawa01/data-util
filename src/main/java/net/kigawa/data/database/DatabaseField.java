@@ -7,16 +7,11 @@ import java.sql.ResultSet;
 
 public abstract class DatabaseField
 {
-    private final String name;
+    public final String name;
 
     public DatabaseField(String name)
     {
         this.name = name;
-    }
-
-    public String getName()
-    {
-        return name;
     }
 
     public abstract void setValue(Object value);

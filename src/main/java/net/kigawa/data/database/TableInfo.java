@@ -70,6 +70,11 @@ public class TableInfo<T> implements Iterable<DatabaseField>
         this.name = recordClass.getCanonicalName();
     }
 
+    public TableInfo<T> getNewTableInfo()
+    {
+        return new TableInfo<>(recordClass, database);
+    }
+
     @Override
     public Iterator<DatabaseField> iterator()
     {

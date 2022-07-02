@@ -5,11 +5,11 @@ import net.kigawa.data.database.DatabaseField;
 import net.kigawa.data.database.TableInfo;
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.sql.SqlBuilder;
-import net.kigawa.data.util.TogetherTwo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -68,9 +68,10 @@ public class Mysql extends AbstractDatabase
         for (var databaseField : tableMeta) {
             sql.add(databaseField.getName())
                     .add(databaseField.getTypeName())
-                    .add("DEFAULT").add(databaseField)
+                    .add("DEFAULT").addField(databaseField)
                     .add(databaseField.getStrOptions()).add(",");
         }
+        sql.removeLatestSql();
         sql.add(")");
         try {
             connect();
@@ -104,7 +105,7 @@ public class Mysql extends AbstractDatabase
         var sql = new SqlBuilder()
                 .add("SELECT").add("*").add("FROM").add(tableInfo.name);
         tableInfo.primaryKey.setValue(keyValue);
-        sql.add("WHERE").add(tableInfo.primaryKey.getName()).add("=").add(tableInfo.primaryKey);
+        sql.add("WHERE").add(tableInfo.primaryKey.getName()).add("=").addField(tableInfo.primaryKey);
 
 
         try {
@@ -130,13 +131,52 @@ public class Mysql extends AbstractDatabase
         var sql = new SqlBuilder()
                 .add("SELECT").add("*").add("FROM").add(tableInfo.name)
                 .add("WHERE").add(where);
-        return null;
+        try {
+            connect();
+            var recordList = new LinkedList<T>();
+            var result = sql.getStatement(connection).executeQuery();
+            while (result.next()) {
+                var tableInfo1 = tableInfo.getNewTableInfo();
+                for (DatabaseField databaseField : tableInfo1) {
+                    databaseField.readResult(result);
+                }
+                recordList.add(tableInfo.record);
+            }
+            return recordList;
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }
     }
 
     @Override
     protected <T> void save(TableInfo<T> tableInfo, T dataHolder)
     {
+        var sql = new SqlBuilder()
+                .add("INSERT").add("INTO").add(tableInfo.name);
+        var labels = new SqlBuilder();
+        var values = new SqlBuilder();
+        var duplicate = new SqlBuilder();
+        for (DatabaseField databaseField : tableInfo) {
+            labels.add(databaseField.name).add(",");
+            values.addField(databaseField).add(",");
+            duplicate.add(databaseField.name).add("=").addField(databaseField).add(",");
+        }
+        labels.removeLatestSql();
+        values.removeLatestSql();
+        duplicate.removeLatestSql();
 
+        sql.add("(").add(labels).add(")")
+                .add("VALUES").add("(").add(values).add(")")
+                .add("ON").add("DUPLICATE").add("KEY").add("UPDATE").add(duplicate);
+
+        try {
+            connect();
+            sql.getStatement(connection).executeUpdate();
+        } catch (SQLException e) {
+            throw new DatabaseException(e);
+        }finally {
+            close();
+        }
     }
 
     @Override

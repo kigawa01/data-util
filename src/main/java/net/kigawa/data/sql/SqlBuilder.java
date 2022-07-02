@@ -1,6 +1,7 @@
 package net.kigawa.data.sql;
 
 import net.kigawa.data.database.DatabaseField;
+import net.kigawa.kutil.kutil.KutilString;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,18 +10,12 @@ import java.util.LinkedList;
 
 public class SqlBuilder
 {
-    private final StringBuffer stringBuffer = new StringBuffer();
+    private final LinkedList<String> sql = new LinkedList<>();
     private final LinkedList<DatabaseField> databaseFields = new LinkedList<>();
-
-    public SqlBuilder append(String str)
-    {
-        stringBuffer.append(str);
-        return this;
-    }
 
     public SqlBuilder add(SqlBuilder sqlBuilder)
     {
-        stringBuffer.append(sqlBuilder.stringBuffer);
+        sql.addAll(sqlBuilder.sql);
         databaseFields.addAll(sqlBuilder.databaseFields);
         return this;
     }
@@ -35,20 +30,27 @@ public class SqlBuilder
 
     public SqlBuilder add(String str)
     {
-        stringBuffer.append(str).append(" ");
+        sql.add(str);
         return this;
     }
 
-    public SqlBuilder add(DatabaseField databaseField)
+    public SqlBuilder addField(DatabaseField databaseField)
     {
         add("?");
         databaseFields.add(databaseField);
         return this;
     }
 
+    public void removeLatestSql()
+    {
+        sql.removeLast();
+    }
+
     public PreparedStatement getStatement(Connection connection) throws SQLException
     {
-        var statement = connection.prepareStatement(stringBuffer.toString());
+        var statement = connection.prepareStatement(
+                KutilString.insertSymbol(new StringBuffer(), " ", sql).toString()
+        );
         for (int i = 0; i < databaseFields.size(); ) {
             var databaseField = databaseFields.get(i);
             databaseField.writeStatement(statement, ++i);
