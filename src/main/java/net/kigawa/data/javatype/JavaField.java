@@ -4,9 +4,9 @@ import net.kigawa.data.database.DatabaseField;
 
 public interface JavaField
 {
-    Object getData();
+    Object getValueObject();
 
-    void setData(Object data);
+    void setValueObject(Object data);
 
     DatabaseField getDatabaseType();
 }
