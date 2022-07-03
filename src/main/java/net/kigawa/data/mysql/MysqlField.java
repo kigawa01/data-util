@@ -5,31 +5,30 @@ import net.kigawa.data.annotation.PrimaryKey;
 import net.kigawa.data.annotation.UniqueKey;
 import net.kigawa.data.database.DatabaseField;
 import net.kigawa.data.javaField.JavaField;
+import net.kigawa.data.sql.SqlBuilder;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
 
 public abstract class MysqlField extends DatabaseField
 {
-    public MysqlField(String name, JavaField javaField, Field field)
+    public MysqlField(JavaField javaField, Field field)
     {
-        super(name, javaField, field);
+        super(javaField, field);
     }
 
-    protected abstract void configureStrOptions(List<String> options);
+    protected abstract void configureOptions(SqlBuilder sqlBuilder);
 
     @Override
-    public String[] getStrOptions()
+    public SqlBuilder getOptions()
     {
-        var options = new LinkedList<String>();
+        var sql = new SqlBuilder();
 
-        if (hasAnnotation(PrimaryKey.class)) options.add("PRIMARY KEY");
-        if (hasAnnotation(UniqueKey.class)) options.add("UNIQUE");
-        if (hasAnnotation(NotNull.class)) options.add("NOT NULL");
+        if (hasAnnotation(PrimaryKey.class)) sql.add("PRIMARY KEY");
+        if (hasAnnotation(UniqueKey.class)) sql.add("UNIQUE");
+        if (hasAnnotation(NotNull.class)) sql.add("NOT NULL");
 
-        configureStrOptions(options);
+        configureOptions(sql);
 
-        return options.toArray(String[]::new);
+        return sql;
     }
 }

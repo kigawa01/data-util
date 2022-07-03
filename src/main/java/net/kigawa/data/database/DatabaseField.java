@@ -30,7 +30,6 @@ public abstract class DatabaseField extends ReflectionContainer
 
     public abstract String getTypeName();
 
-    public abstract String[] getStrOptions();
 
     public abstract void writeStatement(PreparedStatement statement, int index);
 

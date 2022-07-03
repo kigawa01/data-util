@@ -71,8 +71,17 @@ public class Mysql extends AbstractDatabase
             sql.add(databaseField.name)
                     .add(databaseField.getTypeName())
                     .add("DEFAULT").addField(databaseField)
-                    .add(databaseField.getStrOptions()).add(",");
+                    .add(databaseField.getOptions()).add(",");
         }
+
+        for (var databaseConstraint : tableMeta.getConstraints()) {
+            sql.add("CONSTRAINT").add(databaseConstraint.name)
+                    .add("FOREIGN").add("KEY").add("(").add(databaseConstraint.getColumnName()).add(")")
+                    .add("REFERENCES").add(databaseConstraint.getParentName())
+                    .add("(").add(databaseConstraint.getParentColumnName()).add(")");
+            sql.add(databaseConstraint.getOptions()).add(",");
+        }
+
         sql.removeLatestSql();
         sql.add(")");
         try {
