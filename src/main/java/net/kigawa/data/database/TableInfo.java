@@ -1,12 +1,11 @@
 package net.kigawa.data.database;
 
 import net.kigawa.data.annotation.Constraint;
-import net.kigawa.data.annotation.DataField;
 import net.kigawa.data.annotation.PrimaryKey;
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.exception.PrimaryKeyException;
 import net.kigawa.data.javaConstraint.JavaConstraint;
-import net.kigawa.data.javaField.JavaField;
+import net.kigawa.data.javaField.DataField;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -40,7 +39,7 @@ public class TableInfo<T> implements Iterable<DatabaseField>
         }
 
         for (java.lang.reflect.Field field : fields) {
-            if (!field.isAnnotationPresent(Constraint.class) && !field.isAnnotationPresent(DataField.class))
+            if (!field.isAnnotationPresent(Constraint.class) && !field.isAnnotationPresent(net.kigawa.data.annotation.DataField.class))
                 continue;
 
             if (!Modifier.isFinal(field.getModifiers())) throw new DatabaseException("data field must be final");
@@ -61,7 +60,7 @@ public class TableInfo<T> implements Iterable<DatabaseField>
                 constraints.add(databaseConstraint);
 
             }
-            if (field.isAnnotationPresent(DataField.class)) {
+            if (field.isAnnotationPresent(net.kigawa.data.annotation.DataField.class)) {
                 Object javaField;
                 try {
                     javaField = field.get(record);
@@ -69,10 +68,10 @@ public class TableInfo<T> implements Iterable<DatabaseField>
                     throw new DatabaseException(e);
                 }
 
-                if (!(javaField instanceof JavaField))
+                if (!(javaField instanceof DataField))
                     throw new DatabaseException("field must extend JavaTypeInterface");
 
-                var databaseField = database.resolveField((JavaField) javaField);
+                var databaseField = database.resolveField((DataField) javaField);
                 this.databaseFields.add(databaseField);
 
                 if (field.isAnnotationPresent(PrimaryKey.class)) {

@@ -1,7 +1,7 @@
 package net.kigawa.data.database;
 
 
-import net.kigawa.data.javaField.JavaField;
+import net.kigawa.data.javaField.DataField;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -10,12 +10,12 @@ import java.sql.ResultSet;
 
 public abstract class DatabaseField extends ReflectionContainer
 {
-    public final JavaField javaField;
+    public final DataField dataField;
 
-    public DatabaseField( JavaField javaField, Field field)
+    public DatabaseField(DataField dataField, Field field)
     {
         super(field);
-        this.javaField = javaField;
+        this.dataField = dataField;
     }
 
     public boolean hasAnnotation(Class<? extends Annotation> annotation)
@@ -25,7 +25,7 @@ public abstract class DatabaseField extends ReflectionContainer
 
     public void setValue(Object value)
     {
-        javaField.setValueObject(value);
+        dataField.setValueObject(value);
     }
 
     public abstract String getTypeName();

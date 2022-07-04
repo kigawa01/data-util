@@ -4,16 +4,16 @@ import net.kigawa.data.annotation.NotNull;
 import net.kigawa.data.annotation.PrimaryKey;
 import net.kigawa.data.annotation.UniqueKey;
 import net.kigawa.data.database.DatabaseField;
-import net.kigawa.data.javaField.JavaField;
+import net.kigawa.data.javaField.DataField;
 import net.kigawa.data.sql.SqlBuilder;
 
 import java.lang.reflect.Field;
 
 public abstract class MysqlField extends DatabaseField
 {
-    public MysqlField(JavaField javaField, Field field)
+    public MysqlField(DataField dataField, Field field)
     {
-        super(javaField, field);
+        super(dataField, field);
     }
 
     protected abstract void configureOptions(SqlBuilder sqlBuilder);

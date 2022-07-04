@@ -2,7 +2,7 @@ package net.kigawa.data.database;
 
 import net.kigawa.data.exception.DatabaseException;
 import net.kigawa.data.javaConstraint.JavaConstraint;
-import net.kigawa.data.javaField.JavaField;
+import net.kigawa.data.javaField.DataField;
 import net.kigawa.data.sql.SqlBuilder;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
@@ -13,7 +13,7 @@ import java.util.Set;
 public abstract class AbstractDatabase implements Module
 {
     private int connections = 0;
-    private Set<DatabaseResolverInterface> resolver = new HashSet<>();
+    private Set<DatabaseResolver> resolver = new HashSet<>();
 
     public void connect()
     {
@@ -35,24 +35,24 @@ public abstract class AbstractDatabase implements Module
         }
     }
 
-    public void addResolver(DatabaseResolverInterface resolver)
+    public void addResolver(DatabaseResolver resolver)
     {
         this.resolver.add(resolver);
     }
 
-    public void removeResolver(DatabaseResolverInterface resolver)
+    public void removeResolver(DatabaseResolver resolver)
     {
         this.resolver.remove(resolver);
     }
 
-    public DatabaseField resolveField(JavaField javaField)
+    public DatabaseField resolveField(DataField dataField)
     {
         for (var resolver : resolver) {
-            if (!resolver.canResolveField(javaField)) continue;
-            return resolver.resolveField(javaField);
+            if (!resolver.canResolveField(dataField)) continue;
+            return resolver.resolveField(dataField);
         }
 
-        throw new DatabaseException("can not resolve field: " + javaField.toString());
+        throw new DatabaseException("can not resolve field: " + dataField.toString());
     }
 
     public DatabaseConstraint resolveConstraint(JavaConstraint javaConstraint){

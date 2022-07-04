@@ -1,8 +1,6 @@
 package net.kigawa.data.javaField;
 
-import net.kigawa.data.database.DatabaseField;
-
-public abstract class JavaField
+public abstract class DataField
 {
     public abstract Object getValueObject();
 

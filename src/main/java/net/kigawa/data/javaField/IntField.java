@@ -2,7 +2,7 @@ package net.kigawa.data.javaField;
 
 import net.kigawa.data.exception.DatabaseException;
 
-public class IntField extends JavaField
+public class IntField extends DataField
 {
     private Integer integer;
 
