@@ -6,20 +6,41 @@ import net.kigawa.kutil.data.javaField.AbstractDataField;
 import net.kigawa.kutil.data.javaField.AbstractNumberField;
 import net.kigawa.kutil.data.javaField.IntField;
 
+import java.math.BigInteger;
 import java.util.function.Function;
 
 public enum FieldResolvers implements DatabaseResolver.ResolverInterface<AbstractDataField, DatabaseField>
 {
-    INT(IntField.class, FieldResolvers::getNumberField);
+    INT(IntField.class, FieldResolvers::resolveNumberField),
+    ;
 
-    private static DatabaseField getNumberField(AbstractNumberField numberField)
+    private static DatabaseField resolveNumberField(AbstractNumberField numberField)
     {
 
     }
 
     private enum NumberField
     {
+        TINYINT("-128", "127"),
+        UNREGISTERED_TINYINT("0", "255"),
+        SMALL_INT("-32768", "32767"),
+        UNREGISTERED_SMALLINT("0", "65535"),
+        MEDIUMINT("-8388608", "8388607"),
+        UNREGISTERED_MEDIUMINT("0", "16777215"),
+        INT("-2147483648", "2147483647"),
+        UNREGISTERED_INT("0", "4294967295"),
+        BIGINT("-9223372036854775808", "9223372036854775807"),
+        UNREGISTERED_BIGINT("0", "18446744073709551615"),
+        ;
 
+        public final BigInteger min;
+        public final BigInteger max;
+
+        NumberField(String min, String max)
+        {
+            this.min = new BigInteger(min);
+            this.max = new BigInteger(max);
+        }
     }
 
     private final Class<? extends AbstractDataField> javaFieldClass;
