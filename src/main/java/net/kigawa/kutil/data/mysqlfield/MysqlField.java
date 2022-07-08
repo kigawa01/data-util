@@ -1,4 +1,4 @@
-package net.kigawa.kutil.data.mysql;
+package net.kigawa.kutil.data.mysqlfield;
 
 import net.kigawa.kutil.data.annotation.NotNull;
 import net.kigawa.kutil.data.annotation.PrimaryKey;

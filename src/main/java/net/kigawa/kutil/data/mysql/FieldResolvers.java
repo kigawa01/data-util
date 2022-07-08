@@ -2,6 +2,7 @@ package net.kigawa.kutil.data.mysql;
 
 import net.kigawa.kutil.data.database.DatabaseField;
 import net.kigawa.kutil.data.database.DatabaseResolver;
+import net.kigawa.kutil.data.exception.DatabaseException;
 import net.kigawa.kutil.data.javaField.AbstractDataField;
 import net.kigawa.kutil.data.javaField.AbstractNumberField;
 import net.kigawa.kutil.data.javaField.IntField;
@@ -16,10 +17,16 @@ public enum FieldResolvers implements DatabaseResolver.ResolverInterface<Abstrac
 
     private static DatabaseField resolveNumberField(AbstractNumberField numberField)
     {
+        for (NumberFieldRange numberFieldRange : NumberFieldRange.values()) {
+            if (numberField.getMin().compareTo(numberFieldRange.min) < 0) continue;
+            if (numberField.getMax().compareTo(numberFieldRange.max) > 0) continue;
 
+            return numberFieldRange
+        }
+        throw new DatabaseException("can not resolve number field range");
     }
 
-    private enum NumberField
+    private enum NumberFieldRange
     {
         TINYINT("-128", "127"),
         UNREGISTERED_TINYINT("0", "255"),
@@ -36,7 +43,7 @@ public enum FieldResolvers implements DatabaseResolver.ResolverInterface<Abstrac
         public final BigInteger min;
         public final BigInteger max;
 
-        NumberField(String min, String max)
+        NumberFieldRange(String min, String max)
         {
             this.min = new BigInteger(min);
             this.max = new BigInteger(max);
