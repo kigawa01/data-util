@@ -1,12 +1,12 @@
 package net.kigawa.kutil.data.database;
 
 import net.kigawa.kutil.data.annotation.Constraint;
+import net.kigawa.kutil.data.annotation.DataField;
 import net.kigawa.kutil.data.annotation.PrimaryKey;
 import net.kigawa.kutil.data.exception.DatabaseException;
 import net.kigawa.kutil.data.exception.PrimaryKeyException;
 import net.kigawa.kutil.data.javaConstraint.JavaOption;
 import net.kigawa.kutil.data.javaField.AbstractDataField;
-import net.kigawa.kutil.data.annotation.DataField;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +23,7 @@ public class TableInfo<T> implements Iterable<DatabaseField>
     public final T record;
     public final AbstractDatabase database;
     private final List<DatabaseField> databaseFields = new ArrayList<>();
-    private final List<DatabaseOption> constraints = new ArrayList<>();
+    private final List<DatabaseOption> options = new ArrayList<>();
 
     protected TableInfo(Class<T> recordClass, AbstractDatabase database) throws DatabaseException
     {
@@ -57,8 +57,8 @@ public class TableInfo<T> implements Iterable<DatabaseField>
                 if (!(javaConstraint instanceof JavaOption))
                     throw new DatabaseException("constraint must extend JavaConstraint");
 
-                var databaseConstraint = database.resolveConstraint((JavaOption) javaConstraint);
-                constraints.add(databaseConstraint);
+                var databaseConstraint = database.resolveOption((JavaOption) javaConstraint, field);
+                options.add(databaseConstraint);
 
             }
             if (field.isAnnotationPresent(DataField.class)) {
@@ -72,7 +72,7 @@ public class TableInfo<T> implements Iterable<DatabaseField>
                 if (!(javaField instanceof AbstractDataField))
                     throw new DatabaseException("field must extend JavaTypeInterface");
 
-                var databaseField = database.resolveField((AbstractDataField) javaField);
+                var databaseField = database.resolveField((AbstractDataField) javaField, field);
                 this.databaseFields.add(databaseField);
 
                 if (field.isAnnotationPresent(PrimaryKey.class)) {
@@ -90,9 +90,9 @@ public class TableInfo<T> implements Iterable<DatabaseField>
         this.name = recordClass.getCanonicalName();
     }
 
-    public List<DatabaseOption> getConstraints()
+    public List<DatabaseOption> getOptions()
     {
-        return new ArrayList<>(constraints);
+        return new ArrayList<>(options);
     }
 
     public TableInfo<T> getNewTableInfo()

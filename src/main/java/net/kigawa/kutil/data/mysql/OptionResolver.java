@@ -6,6 +6,8 @@ import net.kigawa.kutil.data.database.DatabaseResolver;
 import net.kigawa.kutil.data.javaConstraint.JavaOption;
 import net.kigawa.kutil.data.javaField.IntField;
 
+import java.lang.reflect.Field;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public enum OptionResolver implements DatabaseResolver.ResolverInterface<JavaOption, DatabaseOption>
@@ -15,12 +17,12 @@ public enum OptionResolver implements DatabaseResolver.ResolverInterface<JavaOpt
     });
 
     private final Class<? extends JavaOption> javaFieldClass;
-    private final Function<JavaOption, DatabaseOption> resolver;
+    private final BiFunction<JavaOption, Field, DatabaseOption> resolver;
 
     <T extends JavaOption> OptionResolver(Class<T> javaFieldClass, Function<T, DatabaseOption> resolver)
     {
         this.javaFieldClass = javaFieldClass;
-        this.resolver = (Function<JavaOption, DatabaseOption>) resolver;
+        this.resolver = (BiFunction<JavaOption, Field, DatabaseOption>) resolver;
     }
 
     @Override
@@ -30,7 +32,7 @@ public enum OptionResolver implements DatabaseResolver.ResolverInterface<JavaOpt
     }
 
     @Override
-    public Function<JavaOption, DatabaseOption> getResolver()
+    public BiFunction<JavaOption, Field, DatabaseOption> getResolver()
     {
         return resolver;
     }

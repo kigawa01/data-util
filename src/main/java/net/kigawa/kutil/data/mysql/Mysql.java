@@ -74,12 +74,12 @@ public class Mysql extends AbstractDatabase
                     .add(databaseField.getOptions()).add(",");
         }
 
-        for (var databaseConstraint : tableMeta.getConstraints()) {
-            sql.add("CONSTRAINT").add(databaseConstraint.name)
-                    .add("FOREIGN").add("KEY").add("(").add(databaseConstraint.getColumnName()).add(")")
-                    .add("REFERENCES").add(databaseConstraint.getParentName())
-                    .add("(").add(databaseConstraint.getParentColumnName()).add(")");
-            sql.add(databaseConstraint.getOptions()).add(",");
+        for (var databaseOptions : tableMeta.getOptions()) {
+            sql.add("CONSTRAINT").add(databaseOptions.name)
+                    .add("FOREIGN").add("KEY").add("(").add(databaseOptions.getColumnName()).add(")")
+                    .add("REFERENCES").add(databaseOptions.getParentName())
+                    .add("(").add(databaseOptions.getParentColumnName()).add(")");
+            sql.add(databaseOptions.getOptions()).add(",");
         }
 
         sql.removeLatestSql();
