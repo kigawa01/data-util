@@ -1,20 +1,19 @@
 package net.kigawa.kutil.data.database;
 
 import net.kigawa.kutil.data.exception.DatabaseException;
-import net.kigawa.kutil.data.javaConstraint.JavaOption;
-import net.kigawa.kutil.data.javaField.AbstractDataField;
 import net.kigawa.kutil.data.sql.SqlBuilder;
+import net.kigawa.kutil.data.sql.SqlValue;
 import net.kigawa.kutil.kutil.interfaces.Module;
 
-import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 public abstract class AbstractDatabase implements Module
 {
     private int connections = 0;
-    private Set<DatabaseResolver> resolver = new HashSet<>();
+    private Set<DatabaseResolver> resolvers = new HashSet<>();
 
     public void connect()
     {
@@ -38,32 +37,37 @@ public abstract class AbstractDatabase implements Module
 
     public void addResolver(DatabaseResolver resolver)
     {
-        this.resolver.add(resolver);
+        this.resolvers.add(resolver);
     }
 
     public void removeResolver(DatabaseResolver resolver)
     {
-        this.resolver.remove(resolver);
+        this.resolvers.remove(resolver);
     }
 
-    public DatabaseField resolveField(AbstractDataField dataField, Field field)
+    public String resolveTypeName(FieldInfo fieldInfo)
     {
-        for (var resolver : resolver) {
-            if (!resolver.canResolveField(dataField)) continue;
-            return resolver.resolveField(dataField, field);
-        }
-
-        throw new DatabaseException("can not resolve field: " + dataField.toString());
+        return resolve(fieldInfo, (resolver) -> resolver.resolveTypeName(fieldInfo));
     }
 
-    public DatabaseOption resolveOption(JavaOption javaOption, Field field)
+    public SqlValue resolveSqlValue(FieldInfo fieldInfo)
     {
-        for (var resolver : resolver) {
-            if (!resolver.canResolveConstraint(javaOption)) continue;
-            return resolver.resolveConstraint(javaOption, field);
+        for (var resolver : resolvers) {
+            if (!resolver.canResolve(fieldInfo)) continue;
+            return resolver.
         }
 
-        throw new DatabaseException("can not resolve constraint: " + javaOption.toString());
+        throw new DatabaseException("can not resolve field: " + fieldInfo.toString());
+    }
+
+    private <T> T resolve(FieldInfo fieldInfo, Function<DatabaseResolver, T> resolve)
+    {
+        for (var resolver : resolvers) {
+            if (!resolver.canResolve(fieldInfo)) continue;
+            return resolve.apply(resolver);
+        }
+
+        throw new DatabaseException("can not resolve field: " + fieldInfo.toString());
     }
 
     protected abstract void removeConnection();

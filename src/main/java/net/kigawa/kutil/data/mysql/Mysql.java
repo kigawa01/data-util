@@ -61,20 +61,20 @@ public class Mysql extends AbstractDatabase
 
 
     @Override
-    protected <T> void createTable(TableInfo<T> tableMeta)
+    protected <T> void createTable(TableInfo<T> tableInfo)
     {
         var sql = new SqlBuilder()
-                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(tableMeta.name)
+                .add("CREATE").add("TABLE").add("IF").add("NOT").add("EXISTS").add(tableInfo.name)
                 .add("(");
 
-        for (var databaseField : tableMeta) {
-            sql.add(databaseField.name)
-                    .add(databaseField.getTypeName())
-                    .add("DEFAULT").addField(databaseField)
-                    .add(databaseField.getOptions()).add(",");
+        for (var fieldInfo : tableInfo) {
+            sql.add(fieldInfo.name)
+                    .add(resolveTypeName(fieldInfo))
+                    .add("DEFAULT").addField(fieldInfo)
+                    .add(fieldInfo.getOptions()).add(",");
         }
 
-        for (var databaseOptions : tableMeta.getOptions()) {
+        for (var databaseOptions : tableInfo.getOptions()) {
             sql.add("CONSTRAINT").add(databaseOptions.name)
                     .add("FOREIGN").add("KEY").add("(").add(databaseOptions.getColumnName()).add(")")
                     .add("REFERENCES").add(databaseOptions.getParentName())

@@ -11,7 +11,7 @@ import java.util.LinkedList;
 public class SqlBuilder
 {
     private final LinkedList<String> sql = new LinkedList<>();
-    private final LinkedList<DatabaseField> databaseFields = new LinkedList<>();
+    private final LinkedList<SqlValue> databaseFields = new LinkedList<>();
 
     public SqlBuilder add(SqlBuilder sqlBuilder)
     {
@@ -34,10 +34,10 @@ public class SqlBuilder
         return this;
     }
 
-    public SqlBuilder addField(DatabaseField databaseField)
+    public SqlBuilder addField(SqlValue sqlValue)
     {
         add("?");
-        databaseFields.add(databaseField);
+        databaseFields.add(sqlValue);
         return this;
     }
 
@@ -52,8 +52,8 @@ public class SqlBuilder
                 KutilString.insertSymbol(new StringBuffer(), " ", sql).toString()
         );
         for (int i = 0; i < databaseFields.size(); ) {
-            var databaseField = databaseFields.get(i);
-            databaseField.writeStatement(statement, ++i);
+            var sqlValue = databaseFields.get(i);
+            sqlValue.writeStatement(statement, ++i);
         }
         return statement;
     }
